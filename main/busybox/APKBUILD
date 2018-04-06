@@ -2,33 +2,43 @@
 # Contributor: Oliver Smith <ollieparanoid@bitmessage.ch>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=busybox
-pkgver=1.27.0
-pkgrel=1
+pkgver=1.28.2
+pkgrel=3
 pkgdesc="Size optimized toolbox of many common UNIX utilities"
 url=http://busybox.net
 arch="all"
-license="GPL2"
+license="GPL-2.0"
 makedepends_build=""
 makedepends_host="linux-headers"
 makedepends="$makedepends_build $makedepends_host"
 checkdepends="zip"
+provides="/bin/sh"
 install="$pkgname.post-install $pkgname.post-upgrade
 	$pkgname-extras.post-install $pkgname-extras.pre-deinstall"
 subpackages="$pkgname-static $pkgname-suid $pkgname-extras"
 options="suid !check"
 triggers="busybox.trigger=/bin:/usr/bin:/sbin:/usr/sbin:/lib/modules/*"
 source="http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2
-	0001-ash-exec-busybox.static.patch
-	0002-app-location-for-cpio-vi-and-lspci.patch
-	0003-udhcpc-set-default-discover-retries-to-5.patch
-	0004-ping-make-ping-work-without-root-privileges.patch
-	0005-fbsplash-support-console-switching.patch
-	0006-fbsplash-support-image-and-bar-alignment-and-positio.patch
-	0007-depmod-support-generating-kmod-binary-index-files.patch
-	0008-diff-add-support-for-no-dereference.patch
-	0009-sysklogd-add-Z-option-to-adjust-message-timezones.patch
-	0010-udhcpc-Don-t-background-if-n-is-given.patch
-	0011-testsuite-fix-cpio-tests.patch
+	0001-ash-add-support-for-command_not_found_handle-hook-fu.patch
+	0002-fsck-resolve-LABEL-.-UUID-.-spec-to-device.patch
+	0003-ash-exec-busybox.static.patch
+	0004-app-location-for-cpio-vi-and-lspci.patch
+	0005-udhcpc-set-default-discover-retries-to-5.patch
+	0006-ping-make-ping-work-without-root-privileges.patch
+	0007-fbsplash-support-console-switching.patch
+	0008-fbsplash-support-image-and-bar-alignment-and-positio.patch
+	0009-depmod-support-generating-kmod-binary-index-files.patch
+	0010-Add-flag-for-not-following-symlinks-when-recursing.patch
+	0011-sysklogd-add-Z-option-to-adjust-message-timezones.patch
+	0012-udhcpc-Don-t-background-if-n-is-given.patch
+	0013-testsuite-fix-cpio-tests.patch
+	0014-miscutils-microcom-Fixed-segfault.patch
+	0015-ash-introduce-a-config-option-to-search-current-dire.patch
+	0016-top-handle-much-larger-VSZ-values.patch
+	0017-ifupdown-do-not-fail-if-interface-disappears-during-.patch
+
+	fix-cpio-symlinks.patch
+	0001-grep-fix-echo-aa-busybox-grep-F-w-a-should-not-match.patch
 
 	acpid.logrotate
 	busyboxconfig
@@ -37,6 +47,13 @@ source="http://busybox.net/downloads/$pkgname-$pkgver.tar.bz2
 	dad.if-up
 	nologin.c
 	"
+
+# secfixes:
+#   1.27.2-r4:
+#   - CVE-2017-16544
+#   - CVE-2017-15873
+#   - CVE-2017-15874
+
 builddir="$srcdir"/$pkgname-$pkgver
 
 _staticdir="$srcdir"/build-static
@@ -165,21 +182,29 @@ static() {
 		"$subpkgdir"/bin/busybox.static
 }
 
-sha512sums="0be9acb32e58539c5881c1e147fe2b16bf7f776a16cf41924a61460ddebb8971cfb2cf122797c1faf06d10603a0f90d4db983c60459d23fac18f431f136da1cf  busybox-1.27.0.tar.bz2
-1930775839354a63c30970f0d52d00cfd3a8f6b9f48d6de45ea7d2478d080bde7193c1c2cce026dc7337d9ecf0b65f5ff1dd4351c1eb195e6f0c0c5126f10511  0001-ash-exec-busybox.static.patch
-a756aa89c4602cd091df0052e2e3d7b45a359fbfe953b70aa3029e3eeb8e5d1772cbf1525bb62df6ce6547f1e5605617195ddae336e1ffe41f5c58d524af6ba6  0002-app-location-for-cpio-vi-and-lspci.patch
-fc17ce9b12726e3449518692bf0d4906c36f091534706b5b91c910866bd8cd50d8f7d4b449d54eeed24ee656012a6ef04612bf092874e4b83b0723f852fdce0e  0003-udhcpc-set-default-discover-retries-to-5.patch
-dc0b660b60ef3028a4cc86f712e7f6d08ad7c00d27056f9978a2a103434f45edc7385d2c48eca5ee83efab8fc81735674bf1c40e78fb07a1b5d07ca9da37811a  0004-ping-make-ping-work-without-root-privileges.patch
-63838512679586eb6d83e7b7d3b1e318bb693b91dfb9675a48480e6623e03472b1aa7f86fb7e2ab9e8d6db7a9609b2bcf1c3c1de64fc7d73b65b4794cab87cbf  0005-fbsplash-support-console-switching.patch
-1afe261da507ca13869923033a4adbb3c22e512136cc4b771a2d14d0c25d8de6514cec1dd0363b0684410f0e6a274c3250c1ca8a8a839111f3ed16f800b1d403  0006-fbsplash-support-image-and-bar-alignment-and-positio.patch
-16804d38000bf4395ed2657c19ddf0a1414214db8d2e43541034d5a6db29f74c53c6d8fd28c4c865c7e87fa4a9b914d414e5a00430a261aeaa69ec86bf865780  0007-depmod-support-generating-kmod-binary-index-files.patch
-baac796f8aa96fbeab19f96eea7787ace5737b182f49e02f1b1e911d0a927ae14f3c334daad4241858617dc79607541b9ce66b367d0379b2cb32f67a1e9efc5b  0008-diff-add-support-for-no-dereference.patch
-d1c375184f806f7550bac5c82ab5471bdb8085d845172c973724b22af05ab3759b3ce982e088b4c45815ade56b9adfb7a677d0c180e077545ac7ec003c8aa7c4  0009-sysklogd-add-Z-option-to-adjust-message-timezones.patch
-9b5143d0be615b1604d82007628d59a62721f1e61a63cca7a4ffa5e60fa8da102bfc21fa20cc35c2f5a0a24bc8013598f8eff5888f9d0f3bcfa796343b5f5a91  0010-udhcpc-Don-t-background-if-n-is-given.patch
-f4e00eb13fda752df13f300a7ed9b1320ca9f573c4309247f292c8710464d7be8740148f42e4aff16312335eadabce5a629dce4af58334b9199faf2fd658e4f9  0011-testsuite-fix-cpio-tests.patch
+sha512sums="4d4fe46d17b2475360a9dd914886c2fd5328720ac565cd6ea537c548d7b715a9ef933ae3a82ca446be0d1fef317255e854ce18e79ce15e3e883a2a3b9241d3ed  busybox-1.28.2.tar.bz2
+51d4d58baff825a51d476bd4594cb8980ec2aa4d0c864a0eec39ccbbadd1ae9f1cd1b20f492a735ffcdf7c925573594f3c4363b0561c8aa7b91ef534bfc7b2e0  0001-ash-add-support-for-command_not_found_handle-hook-fu.patch
+5d2fd3e521ee29d970f377363e3a3144eaf9f7714bc57494d743ded9e39c1ad93ea8759b2febd9c3786968b41e61b8d01ce2361aa997df177b644d63718470ba  0002-fsck-resolve-LABEL-.-UUID-.-spec-to-device.patch
+cc5e5ce7a822ef51eb6b8065e1b802bc9d690857b8123cb4decf51b09c4ef655784401a68dd26e0a681fbb64bd2c0fed4001be6e33cac9049e516587ea53c17d  0003-ash-exec-busybox.static.patch
+5f0611d21d1dc106d43ba23234babd41a2167d7032f3b09e825ae3dc9f9aaeb8d1882f59341daff99adecdfb8ba52a5c9fb423c8df3168b2e2304c5bd0ac4991  0004-app-location-for-cpio-vi-and-lspci.patch
+bd4bb1f29f0287aa2ae4e43d791072802ba4f8863ea968612410a2819f7afaec5c0c731b4d91f360461ebfe26942f21e9ff69cbd5fb7d9800e62ef59fe954ab2  0005-udhcpc-set-default-discover-retries-to-5.patch
+f03f852b97f3875d3051b225e6ffe52ed02ae8a8550287b3e09c2ef4d63914e1ab045ba5e2bc2dc2f3c8bf643485de4ebb36b97c74a8a6e49b6ba0261f2ddb94  0006-ping-make-ping-work-without-root-privileges.patch
+a7b4ddb838f51e86040246e11a4b0df7bce37ed5159634bd2a8f388cf57be0551e6e63887b71b530a8a7b86dbdda6bbb3a090173f040050ea864b5f07674395d  0007-fbsplash-support-console-switching.patch
+f8655833f71715629a4a93997939ca295cacb35f17843a36cb6fda285213bdbd258b2f84e321f81859491971412a520f697748ebd6fb46808f830f4ccfa77af4  0008-fbsplash-support-image-and-bar-alignment-and-positio.patch
+f69031d048aa5e087cb6597ad2f7b39b520a5ef3713731e9090c5b65680cd7075bdf3a9443725fac49dce4345bc3345dc702b95d618d45a6d3be8682844784f4  0009-depmod-support-generating-kmod-binary-index-files.patch
+b558f3ceb63e39545c3219796da64a7962bb53515a4eedea2bf9d81057774096b429145f0cd98da2542e3bdadaf92fb11d710fb1879768c9980bf58ccd104b6e  0010-Add-flag-for-not-following-symlinks-when-recursing.patch
+f81d7966133d40a5d79cab4a4edf695bf7cc1f06cf2382c4ed99eea3a72cd222fe36c7b92e427262f67a81fcc2e7f6bff5986b32362c38da3c5163a49fd1ecab  0011-sysklogd-add-Z-option-to-adjust-message-timezones.patch
+a96aa81d2f0104b5c28f02e80b3f77dbce77af93c174c09015a34850474d69e42c160fc8061c62f03465b6f793ead109dde7b0cc367d1e87694805d823f19d7e  0012-udhcpc-Don-t-background-if-n-is-given.patch
+40c125a2ba19bcfaec46084bef98acb775a7f2521d854df41411afcfbc3025a1bdd029b0baf74550923db2541c23c1e9df5d5ded799d1d46dd7cf86a495e4c57  0013-testsuite-fix-cpio-tests.patch
+4cbd38a3c2730ae38e34c5973bb63e40609c32f700d4943cc0e922394e8ee522d1512eb19c7885f5cee49834ab22b2594cb07164cacffefa39964a3b863f4e50  0014-miscutils-microcom-Fixed-segfault.patch
+832eb44c52d2caad4bf6ea79fb17f10c116de3e90ed79038dabe3736d8e74507d1e0cb6f4f7689b4dd506b92437d8df7862038fc0213ecda259e40baf9d9b3de  0015-ash-introduce-a-config-option-to-search-current-dire.patch
+185f11578dc3c3637f1acd1285c71b9e31f4244c57cd85b0848912c085a7a8c833d4c935ab1cadcb9852cf3185c7ffb08db8ea728fb19ab6e6fa90d89f13c75b  0016-top-handle-much-larger-VSZ-values.patch
+d90d6b3406760fe3df6dbed46a0f4d1c02a69d5184ebc86d8c1692bc4576532127283ba3ff9a81e64f3660c279b8ee324dac7a426350873c45957067648651c6  0017-ifupdown-do-not-fail-if-interface-disappears-during-.patch
+65c11538056b6bd782b6195252a2a49f3b374e285a04f3296f708bb7da02b87435c34d43eaf80f1961167f55106fc2e4d5843d0c27cf06e6156ff8fabe642ac8  fix-cpio-symlinks.patch
+bc16f8ee0369274aa145d050cf45d7b0f7e9cd569b40e327b634f442851fff23a7decee0ba7822535bb6e195a0f8ab8a29fe5899cd909abda8d60e4247b462d9  0001-grep-fix-echo-aa-busybox-grep-F-w-a-should-not-match.patch
 a9b1403c844c51934637215307dd9e2adb9458921047acff0d86dcf229b6e0027f4b2c6cdaa25a58407aad9d098fb5685d58eb5ff8d2aa3de4912cdea21fe54c  acpid.logrotate
-857dece10267a065e0e8c16dd6190656f890a5aff774e96321715673dda23e75a8e61148e81d6286b7bdfe737a0b99104f9b04deeb4f392c72b63d8e3d00e556  busyboxconfig
-341cd3e82a9152743aaf0e1a2969bef11b914aa0ee0ed584e74cd72bbb409e6b15207857046743822179909a0760f00c37f5618a660670e1a0e56f82abc9f470  busyboxconfig-extras
-e84087a453f8c9814951c9ad496cce19f8280b80a8ab6a1c8e21385f1facb17e987adc8d1d72c7cb463c04eb0cadd2bd6fb9b6f6c0067ddd21eeacf91ca42f32  bbsuid.c
+035f2a28719971d9ff805d208d70bc1144fd3701235dc46ef581a559e696ef92265f28f7debf0248a2cee004a773dcd07828bcc088716f5aff944ccdce15d30f  busyboxconfig
+0efbe22e2fd56993d92b6542d4ccffb2b42d50495be085c98f417a71f503b4071e2f092afcec77f78064d33ffb0922c28daa3cb9958e6d7fb26d5a660abd90f4  busyboxconfig-extras
+0becc2186d6c32fb0c401cf7bc0e46268b38ce8892db33be1daf40273024c1c02d518283f44086a313a2ccef34230a1d945ec148cc173f26e6aa9d88a7426e54  bbsuid.c
 a1127c8a384294135e11500fde7ead33b73d24b11c21911b08447a4c4ef71d7a9965d6466f60f2da64e3b877213b0a3e924a5add3c5333ee3ecde8c2a91c5e02  dad.if-up
-4e7c291a70e879b74c0fc07c54a73ef50537d8be68fee6b2d409425c07afd2d67f9b6afcd8c33a7971014913cc5de85e45079681c9e77200c6cc2f34acfba6d2  nologin.c"
+061f7417c1cbf0424a5fab77e2f5912aa1593f39b33ea294af4c03518ca712d793a77ea82ff1f36e9cb98751d9faacb9d0240cdf0894efd8f26c13c28a692404  nologin.c"

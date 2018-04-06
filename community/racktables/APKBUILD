@@ -2,14 +2,14 @@
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=racktables
 _realname=RackTables
-pkgver=0.20.13
-pkgrel=0
+pkgver=0.21.1
+pkgrel=1
 pkgdesc="Server room asset management"
 url="http://racktables.org"
 arch="noarch"
-license="GPL2"
-_php=php5
-depends="$_php ${_php}-bcmath ${_php}-gd ${_php}-mysql ${_php}-pdo_mysql
+license="GPL-2.0"
+_php=php7
+depends="$_php ${_php}-bcmath ${_php}-gd ${_php}-mysqli ${_php}-pdo_mysql
 	${_php}-json"
 depends_dev=
 makedepends="$depends_dev"
@@ -49,4 +49,4 @@ package() {
 	 "$pkgdir"/usr/share/webapps/RackTables/wwwroot/index.php || return 1
 }
 
-sha512sums="527790151b432deb15eb90dd7372699ac5073daa099b80d6d3b359a62389318dbc7d5ac9e0e396c829470cb492fffae990b9f971cd4e7bf55d495954a50d3453  RackTables-0.20.13.tar.gz"
+sha512sums="a97532bf5d588af0140f164e187b22c60398a7ba1be3df1bcd5ddccbf82cf8c76246cc6d38d62e0e1719ca091afaee78ea94e840e2e83ced0d54440894364eea  RackTables-0.21.1.tar.gz"

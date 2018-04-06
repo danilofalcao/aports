@@ -3,7 +3,7 @@
 # Maintainer: Timo Teräs <timo.teras@iki.fi>
 pkgname=perl-dbd-pg
 _pkgreal=DBD-Pg
-pkgver=3.6.2
+pkgver=3.7.4
 pkgrel=0
 pkgdesc="DBI PostgreSQL interface"
 url="http://search.cpan.org/dist/DBD-Pg/"
@@ -45,4 +45,4 @@ check() {
 	make test
 }
 
-sha512sums="1f55bd463d90cd0d9933acde0a79462a57f11e7ed9519943cc2cb4487b4b69edd7d16ffa3d666c50aca797f9756ff4e6a0d67b58bc100f4920da36169d73b7b4  DBD-Pg-3.6.2.tar.gz"
+sha512sums="77c629ce89233345f7893b0cc2799a5efc646e86b62ee91986678f196380ac772ece7b9f6c98dae588fbf8f29def1f997335fa85874562ab648af8665cd9add8  DBD-Pg-3.7.4.tar.gz"

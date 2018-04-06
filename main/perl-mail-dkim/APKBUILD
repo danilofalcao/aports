@@ -1,14 +1,16 @@
 # Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=perl-mail-dkim
 _realname=Mail-DKIM
-pkgver=0.41
+pkgver=0.52
 pkgrel=0
 pkgdesc="Signs/verifies Internet mail with DKIM/DomainKey signatures"
-url="http://search.cpan.org/~jaslong/Mail-DKIM-$pkgver/"
+url="http://search.cpan.org/~jaslong/Mail-DKIM/"
 arch="noarch"
-license="unknown"
-depends="perl perl-net-dns perl-net-ip perl-mailtools perl-crypt-openssl-rsa"
+license="Artistic-Perl-1.0 GPL+"
+depends="perl perl-net-dns perl-net-ip perl-mailtools perl-crypt-openssl-rsa
+	perl-yaml-xs perl-net-dns-resolver-mock"
 makedepends="perl-dev"
+checkdepends="perl-test-requiresinternet"
 subpackages="$pkgname-doc"
 source="http://search.cpan.org/CPAN/authors/id/M/MB/MBRADSHAW/$_realname-$pkgver.tar.gz"
 builddir="$srcdir/$_realname-$pkgver"
@@ -36,4 +38,4 @@ check() {
 	make test
 }
 
-sha512sums="f16a818b058b405ee3ffc0962091e7d47268321b35dcd6ca42e1e37ed1ad5b1b3c1e32655f6f0643e046c53f1247a4b9bb9c0202eca7adce4f14d9b38b414f2e  Mail-DKIM-0.41.tar.gz"
+sha512sums="2283e7f2dadfa8fd371d20b56841a434f26bfa37066fd11b1c83d2b96b967be2d90f258913c1653f605677f7b2623adab1352f4e8c740c3bb8b2ad041bc0ceca  Mail-DKIM-0.52.tar.gz"

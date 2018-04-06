@@ -2,15 +2,15 @@
 # Maintainer: William Pitcock <nenolod@dereferenced.org>
 pkgname=py-requests
 _pkgname=requests
-pkgver=2.18.1
+pkgver=2.18.4
 pkgrel=0
 pkgdesc="A HTTP request library for Python"
 url="http://www.python-requests.org/"
 arch="noarch"
-license="ASL 2.0"
+license="Apache-2.0"
 # Requirements for tests are not available in main
 options="!check"
-depends=""
+depends="py-chardet py-idna py-certifi py-urllib3"
 makedepends="python2-dev py-setuptools python3-dev"
 subpackages="py3-${pkgname#py-}:_py3 py2-${pkgname#py-}:_py2"
 source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
@@ -38,11 +38,13 @@ _py() {
 
 _py2() {
 	replaces="$pkgname"
+	depends="${depends//py-/py2-}"
 	_py python2
 }
 
 _py3() {
+	depends="${depends//py-/py3-}"
 	_py python3
 }
 
-sha512sums="d7482ddce36ce633bee830bc8d9f9a207e1c20595378f7c60dcef01cab016a16704965f3b52e3faac63dd50fbe7c61d575742e71f51a2b8d41c1922df2dbaa06  requests-2.18.1.tar.gz"
+sha512sums="5c59bed82ac1094194f04a973b299f7d783264d372abd7a5229295bccc6b2f7a9f082ee4b0dff348e9c22cf68ddbd7cb67f60fd0b7d9eda41c02e40d075e9472  requests-2.18.4.tar.gz"

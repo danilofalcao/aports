@@ -1,18 +1,19 @@
 # Contributor: Łukasz Jendrysik <scadu@yandex.com>
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Takuya Noguchi <takninnovationresearch@gmail.com>
 # Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
 pkgname=ansible
-pkgver=2.3.1.0
+pkgver=2.5.0
 pkgrel=0
 pkgdesc="A configuration-management, deployment, task-execution, and multinode orchestration framework"
-url="http://ansible.com"
+url="https://ansible.com"
 arch="noarch"
-license="GPL3+"
+license="GPL-3.0-or-later"
 _py=py2
 depends="python2 $_py-yaml $_py-paramiko $_py-jinja2 $_py-markupsafe $_py-crypto"
 makedepends="python2-dev py-setuptools"
 subpackages="$pkgname-doc"
-source="$pkgname-$pkgver.tar.gz::http://releases.ansible.com/ansible/$pkgname-$pkgver.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://releases.ansible.com/ansible/$pkgname-$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
@@ -34,4 +35,4 @@ package() {
 	install -m644 README.md "$pkgdir"/usr/share/doc/$pkgname
 }
 
-sha512sums="7b4b33c56a15c41d756f095944d7a0dbf894557350879430df21061b717b9574aae624a276bf7e1a13d043b718aeaccac1ce510a3cb085983311ddf06fa832bc  ansible-2.3.1.0.tar.gz"
+sha512sums="93dee0404c5de0a9c8c5b8987f1fb2dbacceb848e8d5b4c70c5a6692d6fe8e9d4bec67d592071346f458b46b9ed2d800609a080d7d4b16266943f32d56a19220  ansible-2.5.0.tar.gz"

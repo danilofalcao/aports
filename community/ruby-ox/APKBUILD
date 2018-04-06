@@ -1,0 +1,61 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ruby-ox
+_gemname=${pkgname#ruby-}
+pkgver=2.9.0
+pkgrel=0
+pkgdesc="A fast XML parser and object serializer for Ruby"
+url="https://github.com/ohler55/ox"
+arch="all"
+license="MIT"
+depends="ruby-bigdecimal"
+checkdepends="ruby ruby-test-unit"
+makedepends="ruby-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ohler55/$_gemname/archive/v$pkgver.tar.gz
+	gemspec.patch"
+builddir="$srcdir/$_gemname-$pkgver"
+
+build() {
+	cd "$builddir"
+
+	gem build $_gemname.gemspec
+	gem install --local \
+		--install-dir dist \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		$_gemname
+
+	cd dist/extensions/*/*/$_gemname-*/
+
+	# ox expects ox.so to be in ox/ subdirectory, but does not install it here.
+	mkdir ox && mv *.so ox/
+	# Needed for tests.
+	cp -l ox/*.so "$builddir"/ext/$_gemname/
+}
+
+check() {
+	cd "$builddir"
+
+	./test/tests.rb
+
+	./test/sax/sax_test.rb > sax_test.log || {
+		tail -n 50 sax_test.log
+		return 1
+	}
+}
+
+package() {
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
+	cd "$builddir"/dist
+
+	mkdir -p "$gemdir"
+	cp -r extensions gems specifications "$gemdir"/
+
+	# Remove unnecessary and duplicated files.
+	cd "$gemdir"/gems/$_gemname-$pkgver
+	rm -r ext/ lib/*.so || true
+}
+
+sha512sums="b681f3532f22e7111f693106728bcae19a7ed2eba058cfab62d73977281093cc64833460ff64fcfecc4f1bfc115c150d0712819345b0765c6dc4b4d0d67fd59c  ruby-ox-2.9.0.tar.gz
+37b5033258b81efea4c3883b448cc996cd3c287336e66eb6a424d1cdb6c6db0470fe7eba02325adac3dc539ce7e75afaf0a290c57df21870b1ff53cfca917756  gemspec.patch"

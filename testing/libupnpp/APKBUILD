@@ -1,0 +1,29 @@
+# Contributor: Marvin Steadfast <marvin@xsteadfastx.org>
+# Maintainer: Marvin Steadfast <marvin@xsteadfastx.org>
+pkgname=libupnpp
+pkgver=0.16.1
+pkgrel=1
+pkgdesc="a C++ wrapper for libupnp"
+url="https://opensourceprojects.eu/p/libupnpp"
+arch="all"
+license="LGPL-2.0-or-later"
+options="!check"
+depends=""
+makedepends="curl-dev expat-dev libupnp-dev"
+install=""
+subpackages="$pkgname-dev"
+source="libupnpp-$pkgver.tar.gz::http://www.lesbonscomptes.com/upmpdcli/downloads/libupnpp-$pkgver.tar.gz"
+builddir="$srcdir/libupnpp-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="c63eb8ab8a76b7e161625631bee645e7a1f8d779ea6b16ed0bbf43d0972e8875613f04dbf44cd43796273f7b20b4fa71b791d10867c6d220f0d78c15c016c275  libupnpp-0.16.1.tar.gz"

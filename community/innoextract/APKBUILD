@@ -2,11 +2,11 @@
 # Maintainer: Michael Koloberdin <koloberdin@gmail.com>
 pkgname=innoextract
 pkgver=1.6
-pkgrel=2
+pkgrel=3
 pkgdesc="A tool to extract installers created by Inno Setup"
 url="http://constexpr.org/innoextract/"
 arch="all"
-license="ZLIB"
+license="zlib"
 depends=""
 depends_dev="cmake boost-dev xz-dev"
 makedepends="$depends_dev"

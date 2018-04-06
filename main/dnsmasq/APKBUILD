@@ -1,14 +1,29 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+#
+# secfixes:
+#   2.79-r0:
+#     - CVE-2017-15107
+#   2.78-r0:
+#     - CVE-2017-13704
+#     - CVE-2017-14491
+#     - CVE-2017-14492
+#     - CVE-2017-14493
+#     - CVE-2017-14494
+#     - CVE-2017-14495
+#     - CVE-2017-14496
+#
 pkgname=dnsmasq
-pkgver=2.77
+pkgver=2.79
 pkgrel=0
 pkgdesc="A lightweight DNS, DHCP, RA, TFTP and PXE server"
 url="http://www.thekelleys.org.uk/dnsmasq/"
 arch="all"
-license="GPL2"
+license="GPL-2.0"
 depends="!$pkgname-dnssec"
 makedepends="linux-headers nettle-dev"
-install="$pkgname.pre-install $pkgname.pre-upgrade"
+install="$pkgname.pre-install $pkgname.pre-upgrade
+	$pkgname-dnssec.pre-install $pkgname-dnssec.pre-upgrade"
 subpackages="$pkgname-doc $pkgname-dnssec"
 source="http://www.thekelleys.org.uk/dnsmasq/$pkgname-$pkgver.tar.gz
 	$pkgname.initd
@@ -20,8 +35,8 @@ builddir="$srcdir/$pkgname-$pkgver"
 build() {
 	cd "$builddir"
 
-	make CFLAGS="$CFLAGS" COPTS="-DHAVE_DNSSEC" all || return 1
-	mv src/dnsmasq src/dnsmasq~dnssec || return 1
+	make CFLAGS="$CFLAGS" COPTS="-DHAVE_DNSSEC" all
+	mv src/dnsmasq src/dnsmasq~dnssec
 
 	make CFLAGS="$CFLAGS" clean all
 }
@@ -36,15 +51,12 @@ check() {
 package() {
 	cd "$builddir"
 
-	make PREFIX=/usr DESTDIR="$pkgdir" install || return 1
+	make PREFIX=/usr DESTDIR="$pkgdir" install
 
-	install -D -m755 "$srcdir"/$pkgname.initd \
-		"$pkgdir"/etc/init.d/$pkgname || return 1
+	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -D -m644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
 
-	install -D -m644 "$srcdir"/$pkgname.confd \
-		"$pkgdir"/etc/conf.d/$pkgname || return 1
-
-	install -m644 dnsmasq.conf.example "$pkgdir"/etc/dnsmasq.conf || return 1
+	install -m644 dnsmasq.conf.example "$pkgdir"/etc/dnsmasq.conf
 	install -d -m755 "$pkgdir"/etc/dnsmasq.d
 }
 
@@ -54,15 +66,14 @@ dnssec() {
 
 	cd "$builddir"
 
-	install -D -m 755 src/dnsmasq~dnssec \
-		"$subpkgdir"/usr/sbin/dnsmasq || return 1
+	install -D -m 755 src/dnsmasq~dnssec "$subpkgdir"/usr/sbin/dnsmasq
 	install -D -m 644 trust-anchors.conf \
-		"$subpkgdir"/usr/share/$pkgname/trust-anchors.conf || return 1
+		"$subpkgdir"/usr/share/$pkgname/trust-anchors.conf
 
 	cp -r "$pkgdir"/etc "$subpkgdir"/etc
 }
 
-sha512sums="a76a1559238acd19147e3b34053f84569b3882500b1be8b7d6ff2c131fd925b8562c1f41761fda1e261d9a52ff4f5a473e18b5e990f17b33bb81ee9122d1049a  dnsmasq-2.77.tar.gz
-b07055d71e535f753aff432124812fbef86cc2f490ff2a4704959c34b0f69caa74791a4ad08b2b8638c9126233591d3a86c188965eb1308e7e7c12dc0039d1ad  dnsmasq.initd
+sha512sums="c808abc8f24f302cac3609a78fa5a402019a397a248156cda9ce60e6cd706b9f689772af5301c8d1475c3cbbe39ea1528c1e1406f9ec0b7e8153a0899be02352  dnsmasq-2.79.tar.gz
+fe6155ff79f06d1813b5c65eb00c69ed41749882ce9f8458da95797c8d870b635aa1df04335cdab068018432c74b87e2166096fcf60597f1c4594279f31c38e6  dnsmasq.initd
 9a401bfc408bf1638645c61b8ca734bea0a09ef79fb36648ec7ef21666257234254bbe6c73c82cc23aa1779ddcdda0e6baa2c041866f16dfb9c4e0ba9133eab8  dnsmasq.confd
 d01077f39e1240041a6700137810f254daf683b2d58dafecb6b162e94d694992e57d45964a57993b298f97c2b589eedcf9fb1506692730a38b7f06b5f55ba8d8  uncomment-conf-dir.patch"

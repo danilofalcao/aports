@@ -2,16 +2,17 @@
 pkgname=net-tools
 pkgver=1.60_git20140218
 _ver=${pkgver%_git*}
-pkgrel=1
+pkgrel=2
 pkgdesc="Linux networking base tools"
 url="https://sourceforge.net/projects/net-tools/"
 arch="all"
-license="GPLv2"
+license="GPL-2.0"
 depends="mii-tool"
 depends_dev=""
 makedepends="$depends_dev bash linux-headers"
+options="!check"
 install=""
-subpackages="$pkgname-doc mii-tool:mii_tool"
+subpackages="$pkgname-doc $pkgname-dbg mii-tool:mii_tool"
 source="https://downloads.sourceforge.net/project/net-tools/net-tools-$_ver.tar.bz2
 	git.patch
 	musl-fixes.patch

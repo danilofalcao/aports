@@ -1,26 +1,23 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=gdk-pixbuf
-pkgver=2.36.6
+pkgver=2.36.11
 pkgrel=1
-pkgdesc="GDK Pixbuf library"
-url="http://www.gtk.org/"
+pkgdesc="GTK+ image loading library"
+url="https://www.gtk.org/"
 arch="all"
-license="LGPL"
-depends=
+license="LGPL-2.0+"
+depends="shared-mime-info"
 depends_dev=""
 makedepends="$depends_dev tiff-dev libjpeg-turbo-dev gobject-introspection-dev
-libpng-dev glib-dev"
+	libpng-dev glib-dev"
 install="$pkgname.pre-deinstall"
 triggers="$pkgname.trigger=/usr/lib/gdk-pixbuf-2.0/*/loaders"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
-source="http://ftp.gnome.org/pub/gnome/sources/gdk-pixbuf/${pkgver%.*}/gdk-pixbuf-$pkgver.tar.xz
-	CVE-2017-6311.patch
+source="https://download.gnome.org/sources/gdk-pixbuf/${pkgver%.*}/gdk-pixbuf-$pkgver.tar.xz
 	CVE-2017-6312.patch
 	CVE-2017-6314.patch
 	"
 replaces="gtk+"
-
-_builddir="$srcdir"/$pkgname-$pkgver
 
 # secfixes:
 #   2.36.6-r1:
@@ -28,17 +25,8 @@ _builddir="$srcdir"/$pkgname-$pkgver
 #     - CVE-2017-6312
 #     - CVE-2017-6314
 
-prepare() {
-	cd "$_builddir"
-	for i in $source; do
-		case $i in
-		*.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
-		esac
-	done
-}
-
 build() {
-	cd "$_builddir"
+	cd "$builddir"
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
@@ -47,12 +35,19 @@ build() {
 		--with-x11 \
 		--mandir=/usr/share/man \
 		--infodir=/usr/share/info \
-		|| return 1
-	make || return 1
+		--with-libjpeg \
+		--with-libtiff \
+		--enable-introspection
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
-	cd "$_builddir"
+	cd "$builddir"
 	make DESTDIR="$pkgdir" install
 }
 
@@ -66,7 +61,6 @@ dev() {
 	default_dev
 }
 
-sha512sums="b963f01161b58463c83499079545aa946fd824ec5e7167e0898698ac46e0cc3fb3dcb0cac5afabd6b7d957391b9c9bba55f340294076433155fc91052d5403ec  gdk-pixbuf-2.36.6.tar.xz
-b1da3b159b20fe9fcfb06ec77970d3f4adc516dbc63a9fe7e81dbaa61db2f18188775668a2bc764128186696adc9ee3dfd4dcf1a04faa302e23957d38071a610  CVE-2017-6311.patch
+sha512sums="231e13ef2339fc6953788e8597a0c455143273338793ed835dac6ccf42e26e0292dec4121a4976b859ba8ffaa81b3ca5b250b54bd4897dbd3146a1874a59d4e3  gdk-pixbuf-2.36.11.tar.xz
 3b67e10ae02ecfdb541c427f811541e2cd0cfc3f048b1e4b119767b7f8f3a02de8a9c7302c21d23de1ea886f994d4dcdb687580c970d7d49eba80f17075ff0de  CVE-2017-6312.patch
 2ea67f0716234de017f7e8c628d544b40513f23689d70e5e5e2621affabce40ae733d399f64d2641616c114ac7f3fa22396e68142656dbb10993d70181ff5a50  CVE-2017-6314.patch"

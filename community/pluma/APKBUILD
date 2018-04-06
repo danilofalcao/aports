@@ -1,15 +1,17 @@
 # Contributor: Alan Lacerda <alacerda@alpinelinux.org>
 # Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
 pkgname=pluma
-pkgver=1.18.2
+pkgver=1.20.0
 pkgrel=0
 pkgdesc="A small and lightweight UTF-8 text editor for the MATE"
 url="https://github.com/mate-desktop/pluma"
 arch="all"
-license="GPLv2"
-makedepends="$depends_dev intltool enchant-dev iso-codes-dev gtk+3.0-dev
+license="GPL-2.0"
+# check fails as tracked in https://github.com/mate-desktop/pluma/issues/33
+options="!check"
+makedepends="intltool enchant-dev iso-codes-dev gtk+3.0-dev
 	mate-desktop-dev gtksourceview-dev dconf-dev libsm-dev itstool
-	libxml2-utils fortify-headers libpeas-dev"
+	libxml2-utils fortify-headers libpeas-dev gsettings-desktop-schemas-dev"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
 source="http://pub.mate-desktop.org/releases/${pkgver%.*}/$pkgname-$pkgver.tar.xz
 	0001-fix-accessperms-in-tests.patch"
@@ -19,10 +21,16 @@ build() {
 	cd "$builddir"
 	./configure \
 		--build=$CBUILD \
-                --host=$CHOST \
-                --sysconfdir=/etc \
-                --prefix=/usr
-        make
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--enable-static=no \
+		--prefix=/usr
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
@@ -30,5 +38,5 @@ package() {
 	make DESTDIR="${pkgdir}" install
 }
 
-sha512sums="285170531c92ad13fdd35286c06de62b75f0426a830c51f4f54799b4b5377d65b3e1fd1e1af3827462a356947e853e4203a4ed394a8b6137bbd87e289f490b6d  pluma-1.18.2.tar.xz
+sha512sums="31ecf70cacedf9598518aa761449dad5fd25728a68feb06526849c304c5e08db635e072a1196b865c40a81e71eefdacdb62a16e7cdca609f63d48aa7cd14c7db  pluma-1.20.0.tar.xz
 3aa0ae2e383bcc36c63384455062954876e77995da79a757b4eb6e37f3b2e5f7139165d7bb95c193ff888d33d2682773e981bf7e44fd963e918696d64e537741  0001-fix-accessperms-in-tests.patch"

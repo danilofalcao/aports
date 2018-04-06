@@ -1,17 +1,18 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=ldb
-pkgver=1.2.0
-pkgrel=0
+pkgver=1.3.2
+pkgrel=1
 pkgdesc="A schema-less, ldap like, API and database"
 url="http://ldb.samba.org/"
 arch="all"
-license="LGPLv3+"
-makedepends="$depends_dev tevent-dev py-tevent tdb-dev py-tdb talloc-dev
-	python2-dev popt-dev cmocka-dev"
-subpackages="$pkgname-dev py-$pkgname:_py $pkgname-tools"
-source="http://samba.org/ftp/ldb/ldb-$pkgver.tar.gz"
-
-builddir="$srcdir"/ldb-$pkgver
+license="LGPL-3.0-or-later"
+makedepends="libtirpc-dev tevent-dev py2-tevent tdb-dev py2-tdb talloc-dev
+	python2-dev python3-dev popt-dev cmocka-dev"
+subpackages="$pkgname-dev py2-$pkgname:_py2 py3-$pkgname:_py3 $pkgname-tools"
+source="https://www.samba.org/ftp/pub/ldb/$pkgname-$pkgver.tar.gz
+	fix-memory-leak-on-module-context.patch
+	disable-python-tests.patch"
+builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
@@ -26,8 +27,14 @@ build() {
 		--disable-rpath \
 		--bundled-libraries=NONE \
 		--builtin-libraries=replace \
-		--with-modulesdir=/usr/lib/ldb/modules
+		--with-modulesdir=/usr/lib/ldb/modules \
+		--extra-python=/usr/bin/python3
 	make
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
@@ -35,11 +42,22 @@ package() {
 	make DESTDIR="$pkgdir" install
 }
 
-_py() {
-	pkgdesc="Python binding for the ldb library"
+_py2() {
+	pkgdesc="Python 2 binding for the ldb library"
+	provides="py-ldb=$pkgver-r$pkgrel"  # for backward compatibility
+	replaces="py-ldb"  # for backward compatibility
+
 	mkdir -p "$subpkgdir"/usr/lib
-	mv "$pkgdir"/usr/lib/python* "$subpkgdir"/usr/lib/
-	mv "$pkgdir"/usr/lib/libpyldb*.so.* "$subpkgdir"/usr/lib/
+	mv "$pkgdir"/usr/lib/python2* "$subpkgdir"/usr/lib/
+	mv "$pkgdir"/usr/lib/libpyldb-util.so.* "$subpkgdir"/usr/lib/
+}
+
+_py3() {
+	pkgdesc="Python 3 binding for the ldb library"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python3* "$subpkgdir"/usr/lib/
+	mv "$pkgdir"/usr/lib/libpyldb-util.cpython* "$subpkgdir"/usr/lib/
 }
 
 tools() {
@@ -49,4 +67,6 @@ tools() {
 	mv "$pkgdir"/usr/lib/ldb/libldb-cmdline.* "$subpkgdir"/usr/lib/ldb/
 }
 
-sha512sums="5c5124c7d4c648872e52eeebdc3f74a3b755e36fa7462df1784a2d6232ee4b8ce26169900c524c7f00f878a39beb3f8e5ad0565500377ee38fdaa0311463c583  ldb-1.2.0.tar.gz"
+sha512sums="31b29a2a991038910830cb47b02b7f08e1958638d073d5f1602a2657c4005c7e5f5f2c2f7972eeddef462d8c70aaad7f02ddf901cb50f1b1bbafa0c22498973d  ldb-1.3.2.tar.gz
+7524e23ff8fe378fc4e24ac9e93bfa27012a2a646c5411d419d0181ffd4192fdbb0c3b28f4e2a2e43cf93a1340eeaf526699ac16d846b616612d922abd2595aa  fix-memory-leak-on-module-context.patch
+49b68f36caebbad8d36682f4a342644bc9df6ebb39c625a6aec6d197d63e52bff137c1b9c188a0c7e8365fdc0ac936f56e761cf8677034a7a70fd5717a130bbb  disable-python-tests.patch"

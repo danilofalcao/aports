@@ -1,13 +1,13 @@
 # Contributor: Shiz <hi@shiz.me>
 # Maintainer: Shiz <hi@shiz.me>
 pkgname=yodl
-pkgver=3.08.02
+pkgver=4.02.00
 pkgrel=0
 pkgdesc="Pre-document language and tools to process it"
 url="https://fbb-git.github.io/yodl/"
 arch="all"
-license="GPL2"
-makedepends="icmake bash perl flex bison"
+license="GPL-2.0"
+makedepends="icmake bash perl flex bison ncurses"
 subpackages="$pkgname-doc"
 source="yodl-$pkgver.tar.gz::https://github.com/fbb-git/yodl/archive/$pkgver.tar.gz"
 builddir="$srcdir/yodl-$pkgver/yodl"
@@ -37,4 +37,4 @@ package() {
 	done
 }
 
-sha512sums="adad9f6235288f0ae6990c0dbba3cd7c8461172ae83231ca8fa113275d04ad20d3722e70f6f0ffcf072a19b4816e556b9b09227123516fc4a0170bc053b48b8e  yodl-3.08.02.tar.gz"
+sha512sums="ca3a2490bf54a0ce4e800a62a3de9a5cf37df96f0f553de89623ef6d36f07b65b7c09168e77d267d7fb79d900a8e8a6c6d3c17c4b733345001213f5450c02b13  yodl-4.02.00.tar.gz"

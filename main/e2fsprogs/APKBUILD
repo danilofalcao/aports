@@ -1,21 +1,21 @@
 # Contributor: Valery Kartel <valery.kartel@gmail.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=e2fsprogs
-pkgver=1.43.4
+pkgver=1.44.1
 pkgrel=0
 pkgdesc="Standard Ext2/3/4 filesystem utilities"
 url="http://e2fsprogs.sourceforge.net"
 arch="all"
-license="GPL LGPL MIT"
+license="GPL-2.0-or-later LGPL-2.0 BSD-3-Clause MIT"
 depends=""
 depends_dev="util-linux-dev"
+options="!check"
 makedepends="$depends_dev linux-headers"
 subpackages="$pkgname-dev $pkgname-doc libcom_err $pkgname-libs $pkgname-extra"
-# http://downloads.sourceforge.net/sourceforge/e2fsprogs/$pkgname-$pkgver.tar.gz
 source="https://www.kernel.org/pub/linux/kernel/people/tytso/$pkgname/v$pkgver/$pkgname-$pkgver.tar.xz
 	"
-
 builddir="$srcdir/$pkgname-$pkgver"
+
 build () {
 	cd "$builddir"
 	./configure \
@@ -29,15 +29,13 @@ build () {
 		--disable-libuuid \
 		--disable-libblkid \
 		--disable-tls \
-		--disable-nls \
-		|| return 1
-
-	make || return 1
+		--disable-nls
+	make
 }
 
 package() {
 	cd "$builddir"
-	make -j1 LDCONFIG=: DESTDIR="$pkgdir" install install-libs || return 1
+	make -j1 LDCONFIG=: DESTDIR="$pkgdir" install install-libs
 	mv "$pkgdir"/sbin/* "$pkgdir"/usr/sbin/
 	for i in e2fsck mke2fs mkfs.* fsck.*; do
 		mv "$pkgdir"/usr/sbin/$i "$pkgdir"/sbin/
@@ -64,10 +62,8 @@ extra() {
 	depends="$pkgname"
 	pkgdesc="Ext2/3/4 filesystem extra utilities"
 	mkdir -p "$subpkgdir"
-	rmdir "$pkgdir"/lib || return 1
+	rmdir "$pkgdir"/lib
 	mv "$pkgdir"/usr "$subpkgdir"/
 }
 
-md5sums="8903379ef0b902f4e29b6cafea359fe1  e2fsprogs-1.43.4.tar.xz"
-sha256sums="54b3f21123a531a6a536b9cdcc21344b0122a72790dbe4dacc98e64db25e4a24  e2fsprogs-1.43.4.tar.xz"
-sha512sums="c0f699e70d6d346a8130d965053f7951bb10a56aabce37938ec8f28d07b976adf5680c941cddae17c17b2f73bfaf5491f05e39e667d2416b7d30c807fbd8a630  e2fsprogs-1.43.4.tar.xz"
+sha512sums="88dc96c1420ab7b958c7b49179524f34db4073f865414a121d898ac347fae9182f757314653861f4aa8324bb49f944f0648840c704d124dee22c06ba0406ee55  e2fsprogs-1.44.1.tar.xz"

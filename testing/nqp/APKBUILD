@@ -1,0 +1,45 @@
+# Contributor: Curt Tilmes <Curt.Tilmes@nasa.gov>
+# Maintainer: Curt Tilmes <Curt.Tilmes@nasa.gov>
+pkgname=nqp
+pkgver=2018.03
+pkgrel=0
+pkgdesc="Not Quite Perl"
+url="https://github.com/perl6/nqp"
+arch="all"
+options="!archcheck" # Arch dependencies are embedded
+license="Artistic-2.0"
+depends="moarvm"
+makedepends="perl-utils moarvm-dev"
+install=""
+subpackages="$pkgname-doc"
+source="${pkgname}-${pkgver}.tar.gz::https://github.com/perl6/nqp/archive/${pkgver}.tar.gz"
+builddir="$srcdir"/"$pkgname"-"$pkgver"
+
+# some tests fail on armhf, need to investigate more
+[ "$CARCH" = "armhf" ] && options="$options !check"
+
+build() {
+	cd "$builddir"
+	perl Configure.pl --prefix=/usr --backends=moar
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+doc() {
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/share/doc/"$pkgname"
+	for file in CREDITS LICENSE README.pod VERSION docs examples; do
+		cp -r $file "$subpkgdir"/usr/share/doc/"$pkgname"
+	done
+}
+
+sha512sums="2f6ac6a3be173ef92d80b80b5557aa49028c04b89fda5465a0c69e6a6253bce9d39662919f60867e7ededa499b81e4d2cd8f5fb0d7edfd022833c1f64f492440  nqp-2018.03.tar.gz"

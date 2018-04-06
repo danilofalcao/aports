@@ -2,7 +2,7 @@
 
 # apk add \
 #	abuild apk-tools alpine-conf busybox fakeroot syslinux xorriso
-#	(for efi:) mtools dosfstools grub-efi
+#	(for efi:) mtools grub-efi
 
 # FIXME: clean workdir out of unneeded sections
 # FIXME: --release: cp/mv images to REPODIR/$ARCH/releases/
@@ -201,7 +201,13 @@ while [ $# -gt 0 ]; do
 	opt="$1"
 	shift
 	case "$opt" in
-	--repository) REPODIR="$1"; shift ;;
+	--repository)
+		if [ -z "$REPOS" ]; then
+			REPOS="$1"
+		else
+			REPOS=$(printf '%s\n%s' "$REPOS" "$1");
+		fi
+		shift ;;
 	--extra-repository) EXTRAREPOS="$EXTRAREPOS $1"; shift ;;
 	--workdir) WORKDIR="$1"; shift ;;
 	--outdir) OUTDIR="$1"; shift ;;
@@ -256,10 +262,10 @@ for ARCH in $req_arch; do
 		cp -Pr /etc/apk/keys "$APKROOT/etc/apk/"
 		abuild-apk --arch "$ARCH" --root "$APKROOT" add --initdb
 
-		if [ -z "$REPODIR" ]; then
+		if [ -z "$REPOS" ]; then
 			warning "no repository set"
 		fi
-		echo "$REPODIR" > "$APKROOT/etc/apk/repositories"
+		echo "$REPOS" > "$APKROOT/etc/apk/repositories"
 		for repo in $EXTRAREPOS; do
 			echo "$repo" >> "$APKROOT/etc/apk/repositories"
 		done

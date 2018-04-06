@@ -1,23 +1,21 @@
 # Contributor: Sergey Lukin <sergej.lukin@gmail.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=icu
-pkgver=58.2
+pkgver=60.2
 
 # convert x.y.z to x_y_z
 _ver=${pkgver//./_}
 
-pkgrel=2
+pkgrel=1
 pkgdesc="International Components for Unicode library"
 url="http://www.icu-project.org/"
 arch="all"
 license="custom:icu"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-libs"
 depends=
+checkdepends="diffutils"
 makedepends=
 source="http://download.icu-project.org/files/icu4c/${pkgver}/${pkgname}4c-$_ver-src.tgz
-	icu-timezone.patch
-	icu-58.1-iterator-reset.patch
-	CVE-2017-7867-7868.patch
 	"
 
 # secfixes:
@@ -32,7 +30,8 @@ builddir="$srcdir"/icu/source
 
 prepare() {
 	cd "$builddir"
-	update_config_sub || return 1
+	default_prepare
+	update_config_sub
 
 	# strtod_l() is not supported by musl; also xlocale.h is missing
 	# It is not possible to disable its use via configure switches or env vars
@@ -44,17 +43,7 @@ prepare() {
 	local x
 	# https://bugs.icu-project.org/trac/ticket/6102
 	for x in ARFLAGS CFLAGS CPPFLAGS CXXFLAGS FFLAGS LDFLAGS; do
-		sed -i -e "/^${x} =.*/s:@${x}@::" "config/Makefile.inc.in" \
-			|| return 1
-	done
-
-	for i in $source; do
-		case "$i" in
-		*.patch)
-			msg "Applying $i"
-			patch -p1 -i "$srcdir"/$i || return 1
-			;;
-		esac
+		sed -i -e "/^${x} =.*/s:@${x}@::" "config/Makefile.inc.in"
 	done
 }
 
@@ -67,14 +56,20 @@ build() {
 		--sysconfdir=/etc \
 		--with-data-packaging=library \
 		--disable-samples \
-		--mandir=/usr/share/man \
-		|| return 1
-	make || return 1
+		--mandir=/usr/share/man
+	make
+}
+
+check() {
+	# armhf tests fail with gensprep: Bus error
+	[ "$CARCH" != armhf ] || return 0
+	cd "$builddir"
+	make check
 }
 
 package() {
 	cd "$builddir"
-	make -j1 DESTDIR="$pkgdir" install || return 1
+	make -j1 DESTDIR="$pkgdir" install
 	chmod +x "$pkgdir"/usr/bin/icu-config
 	install -Dm644 "$srcdir"/icu/license.html \
 		"$pkgdir"/usr/share/licenses/icu/license.html
@@ -85,7 +80,4 @@ libs() {
 	replaces="icu"
 }
 
-sha512sums="5c21af748f48b392e6c0412bd0aee92162ea931820dcbfab4ec6e0299868504b303d88f7586cc95de55c777ac0dca3a29d6c8ca0892c646ebc864c8a5b5a162a  icu4c-58_2-src.tgz
-40489c36e28e160f08e045acab6c19cdb712ad3b7f87f67099deac7d579aaf13d8841cd3278a6bb0e998b5c34a378348a13fcc8bb14c9c4eb4f6adbd10d66825  icu-timezone.patch
-c97986e188bc0f3daa2d3bebed309b87704797f527197fde910794499d1079ea0ce33a75124d2f9a8fd451d91a44d8d5077fc77c1cd49aee53bdbaf61a5826d1  icu-58.1-iterator-reset.patch
-4b6a6d5a2d96ca2beb400170278745871f6903ff6d0b1e83ddaae3e13dfc872e94805e16540f2e2e9f797cdf9b47d06152e728ed76c77a63c36aeeb1ad8870ad  CVE-2017-7867-7868.patch"
+sha512sums="8e718e66c13e7f25714404c46b91ed6305efff1df70c328be2ec743023a7719016dae72a5fa0a05d6f5599983590a2044ff72d3453a048d987ab546d0416d694  icu4c-60_2-src.tgz"

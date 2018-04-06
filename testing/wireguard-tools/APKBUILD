@@ -2,12 +2,13 @@
 # Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
 
 pkgname=wireguard-tools
-pkgver=0.0.20170629
-pkgrel=0
+pkgver=0.0.20180304
+pkgrel=2
 pkgdesc="Next generation secure network tunnel: userspace tools"
 arch='all'
-url='https://www.wireguard.io'
-license="GPLv2"
+url='https://www.wireguard.com'
+license="GPL-2.0"
+depends="bash"
 makedepends="libmnl-dev"
 subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
 options="!check"
@@ -16,22 +17,22 @@ builddir="$srcdir"/WireGuard-$pkgver
 
 build() {
 	cd "$builddir"
-	make -C src/tools || return 1
+	make -C src/tools
 }
 
 package() {
 	cd "$builddir"
-	mkdir -p "$pkgdir"/usr/share/doc/$_name
+	mkdir -p "$pkgdir/usr/share/doc/$pkgname"
 
 	make -C src/tools \
 		DESTDIR="$pkgdir" \
 		WITH_BASHCOMPLETION=yes \
 		WITH_WGQUICK=yes \
 		WITH_SYSTEMDUNITS=no \
-		install || return 1
+		install
 
 	find "$builddir"/contrib/examples -name '.gitignore' -delete
-	cp -rf "$builddir"/contrib/examples "$pkgdir"/usr/share/doc/$_name/
+	cp -rf "$builddir"/contrib/examples "$pkgdir/usr/share/doc/$pkgname/"
 }
 
 bashcomp() {
@@ -42,4 +43,4 @@ bashcomp() {
 	mv "$pkgdir"/usr/share "$subpkgdir"/usr
 }
 
-sha512sums="61ad1fc092aada471a847df2170964a8c963c4eb4e43425c20430fc0619fdf55ea56ba8a7839c5fddbbc323af089378da2d540a1ba0f8009d5cb7953da543147  WireGuard-0.0.20170629.tar.xz"
+sha512sums="dc7ad4c366625bc614f95abe163459804fa3b6a4dd9e1c7eee1571d3dab5a5bc88dbdc6cc79b9ec48f471ba71da54050f1bce8874ed130f15234a8353d276e50  WireGuard-0.0.20180304.tar.xz"

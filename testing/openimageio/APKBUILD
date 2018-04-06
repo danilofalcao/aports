@@ -1,8 +1,8 @@
 # Contributor: Mark Riedesel <mark@klowner.com>
 # Maintainer: Mark Riedesel <mark@klowner.com>
 pkgname=openimageio
-pkgver=1.7.14
-pkgrel=1
+pkgver=1.8.9
+pkgrel=2
 pkgdesc="Image I/O library supporting a multitude of image formats"
 url="https://sites.google.com/site/openimageio/"
 arch="all"
@@ -10,13 +10,13 @@ license="BSD"
 depends=""
 # NOTE: OpenColorIO and OpenImageIO are cross dependent. If an ABI incompatible
 # update is done in one, the other also needs to be rebuilt.
-makedepends="cmake giflib-dev zlib-dev boost-dev jpeg-dev libpng-dev tiff-dev
-	glew-dev python2-dev>=2.6 python3-dev openexr-dev ffmpeg-dev
-	libraw-dev libwebp-dev freetype-dev qt-dev mesa-dev libressl-dev
+makedepends="cmake giflib-dev zlib-dev boost-dev libjpeg-turbo-dev libpng-dev tiff-dev
+	glew-dev python2-dev>=2.6 openexr-dev ffmpeg-dev
+	libraw-dev libwebp-dev freetype-dev qt5-qtbase-dev mesa-dev libressl-dev
 	jasper-dev opencolorio-dev"
-subpackages="py2-$pkgname:_python py3-$pkgname:_python $pkgname-dev $pkgname-doc $pkgname-tools"
+subpackages="py2-$pkgname:_python $pkgname-dev $pkgname-doc $pkgname-tools"
 source="$pkgname-$pkgver.tar.gz::https://github.com/OpenImageIO/oiio/archive/Release-${pkgver}.tar.gz
-	nocpp-error.patch"
+	"
 builddir="$srcdir/oiio-Release-$pkgver"
 
 build() {
@@ -26,12 +26,10 @@ build() {
 	cmake .. \
 		-DUSE_OPENSSL=ON \
 		-DUSE_PYTHON=ON \
-		-DUSE_PYTHON3=ON \
 		-DUSE_NUKE=OFF \
 		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DCMAKE_SKIP_RPATH=ON \
-		-DPYLIB_INSTALL_DIR="$(_pysitepackages python2)" \
-		-DPYLIB3_INSTALL_DIR="$(_pysitepackages python3)" \
 		-DOIIO_BUILD_TESTS=OFF \
 		-DOIIO_BUILD_TOOLS=ON \
 		-DINSTALL_FONTS=OFF \
@@ -41,7 +39,7 @@ build() {
 
 package() {
 	cd "$builddir"/build
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
 tools() {
@@ -53,17 +51,11 @@ tools() {
 
 _python() {
 	local pyver="${subpkgname:2:1}"
-	local pypath="$(_pysitepackages python$pyver)"
 	pkgdesc="Python $pyver bindings for OpenImageIO image I/O library"
 	depends="python$pyver"
 
-	mkdir -p "$subpkgdir"$pypath
-	mv "$pkgdir"$pypath/* "$subpkgdir"$pypath/
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python$pyver* "$subpkgdir"/usr/lib/
 }
 
-_pysitepackages() {
-	$1 -c "import site; print(site.getsitepackages()[0])"
-}
-
-sha512sums="78f0656f89001fa79cb48a7c0a320df1d9d71770e4f0d9dd159c752adc67b2f3129b87447f16885f3500d52870361209a466ad0e9a8477783ba337f90bc84427  openimageio-1.7.14.tar.gz
-fc27840bc37d01badc81d6a1c49216f44370805f3f43184646a5d12879706a6358a41868d7938c13611f43a4bfc695fd1ef4d1baee3e9a926dc4629e4675fe68  nocpp-error.patch"
+sha512sums="300eab0d2e7277c46550339d72af59b3ab2232d296b4d46808575015075cdbb9dd911e9b335c0d10bf6d95ebde907240af0f4828d422aca091f82491693dfef3  openimageio-1.8.9.tar.gz"

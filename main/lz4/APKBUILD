@@ -1,24 +1,41 @@
 # Contributor: Stuart Cardall <developer@it-offshore.co.uk>
 # Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
 pkgname=lz4
-pkgver=1.7.5
+pkgver=1.8.1.2
 pkgrel=0
 pkgdesc="LZ4 is lossless compression algorithm with fast decoder @ multiple GB/s per core."
 url="https://github.com/lz4/lz4"
 arch="all"
-license="BSD"
-subpackages="$pkgname-dev $pkgname-doc $pkgname-libs"
-source="$pkgname-$pkgver.tar.gz::https://github.com/lz4/lz4/archive/v$pkgver.tar.gz"
+license="BSD-2-Clause GPL-2.0-only"
+checkdepends="diffutils"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-libs $pkgname-tests:tests"
+source="$pkgname-$pkgver.tar.gz::https://github.com/$pkgname/$pkgname/archive/v$pkgver.tar.gz"
 builddir="$srcdir"/$pkgname-$pkgver
+
+case "$CARCH" in
+armhf) options="!check" ;; # FIXME
+esac
 
 build() {
 	cd "$builddir"
-	make PREFIX="/usr" || return 1
+	make PREFIX="/usr"
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+tests() {
+	cd "$builddir"/tests
+	mkdir -p "$subpkgdir"/usr/share/$pkgname
+	rm -f *.c COPYING Makefile .gitignore
+	cp -rf "$builddir"/tests "$subpkgdir"/usr/share/$pkgname
 }
 
 package() {
 	cd "$builddir"
-	make PREFIX="/usr" DESTDIR="$pkgdir" install || return 1
+	make PREFIX="/usr" DESTDIR="$pkgdir" install
 }
 
-sha512sums="b4e5b17fe06805e676608e636a45f0b480b79a02c6b7ffce84dc4d607861cb2652b2852493ab9d9249e7caeae6f00b6834801fdc39f58d901cbc1c7347915295  lz4-1.7.5.tar.gz"
+sha512sums="f4ed450bc05477cc6c2b42e6fe1fbb1fb0907f1d05b68b1d69d975b555ddb385550f204258e6d91642e14ce373815141dc218cda03b711793935d5458bc45c7f  lz4-1.8.1.2.tar.gz"

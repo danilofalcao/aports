@@ -1,0 +1,28 @@
+--- omxplayer-2ee17b22a6149a043a2e402580504f282c615373.orig/Makefile	2017-10-17 19:51:35.000000000 +0300
++++ omxplayer-2ee17b22a6149a043a2e402580504f282c615373/Makefile	2017-11-21 15:43:30.122410419 +0200
+@@ -3,8 +3,11 @@
+ 
+ LDFLAGS=-L$(SDKSTAGE)/opt/vc/lib/
+ LDFLAGS+=-L./ -Lffmpeg_compiled/usr/local/lib/ -lc -lbrcmGLESv2 -lbrcmEGL -lbcm_host -lopenmaxil -lfreetype -lz -lasound
++LDFLAGS+=-L./ -Wl,-rpath,/opt/vc/lib/
++LIBS+=-lWFC -lGLESv2 -lEGL -lbcm_host -lopenmaxil -lfreetype -lz -lasound
+ 
+-INCLUDES+=-I./ -Ilinux -Iffmpeg_compiled/usr/local/include/ -I /usr/include/dbus-1.0 -I /usr/lib/arm-linux-gnueabihf/dbus-1.0/include -I/usr/include/freetype2 -isystem$(SDKSTAGE)/opt/vc/include -isystem$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads
++
++INCLUDES+=-I./ -Ilinux $(shell pkg-config --cflags dbus-1 freetype2) -isystem$(SDKSTAGE)/opt/vc/include -isystem$(SDKSTAGE)/opt/vc/include/interface/vcos/pthreads
+ 
+ DIST ?= omxplayer-dist
+ STRIP ?= strip
+@@ -50,10 +53,10 @@
+ omxplayer.o: help.h keys.h
+ 
+ version:
+-	bash gen_version.sh > version.h 
++	sh gen_version.sh > version.h
+ 
+ omxplayer.bin: version $(OBJS)
+-	$(CXX) $(LDFLAGS) -o omxplayer.bin $(OBJS) -lvchiq_arm -lvchostif -lvcos -ldbus-1 -lrt -lpthread -lavutil -lavcodec -lavformat -lswscale -lswresample -lpcre
++	$(CXX) $(LDFLAGS) -o omxplayer.bin $(OBJS) $(LIBS) -lvchiq_arm -lvcos -ldbus-1 -lrt -lpthread -lavutil -lavcodec -lavformat -lswscale -lswresample -lpcre
+ 	$(STRIP) omxplayer.bin
+ 
+ help.h: README.md Makefile

@@ -1,12 +1,12 @@
 # Contributor: Francesco Colista <fcolista@alpinelinux.org>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=speedtest-cli
-pkgver=1.0.6
+pkgver=2.0.0
 pkgrel=0
 pkgdesc="Command line interface for testing internet bandwidth using speedtest.net"
 url="https://github.com/sivel/speedtest-cli"
 arch="noarch"
-license="ASL 2.0"
+license="Apache-2.0"
 depends="python3"
 makedepends="python3-dev"
 source="$pkgname-$pkgver.tar.gz::https://github.com/sivel/speedtest-cli/archive/v$pkgver.tar.gz"
@@ -28,4 +28,4 @@ package() {
 	install -Dm755 speedtest.py "$pkgdir"/usr/bin/speedtest-cli
 }
 
-sha512sums="18bd7665aab86e2415906536d69ce3e07784b3625a9d1a01c3e5e86b1c4f5dbb72301c6a4fcfbf259a52fff5ea0826b2cd9bb5166e05335cb48729b5d74dd921  speedtest-cli-1.0.6.tar.gz"
+sha512sums="60bde263a06589c609a10e1a881a1b02f7c7426b95778d7729b1388e545713094501914c24ee08f0857c4f445354539b5508825ab1a51df284215ba681dd7888  speedtest-cli-2.0.0.tar.gz"

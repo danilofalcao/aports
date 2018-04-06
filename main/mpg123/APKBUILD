@@ -1,23 +1,17 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=mpg123
-pkgver=1.25.2
+pkgver=1.25.10
 pkgrel=0
-pkgdesc="A console based real time MPEG Audio Player for Layer 1, 2 and 3"
-url="http://www.mpg123.org/"
+pkgdesc="Console-based MPEG Audio Player for Layers 1, 2 and 3"
+url="http://www.mpg123.org"
 arch="all"
-license="GPL2 LGPL2"
+license="GPL-2.0 LGPL-2.0"
 subpackages="$pkgname-dev $pkgname-doc"
 depends=""
 makedepends="libtool alsa-lib-dev linux-headers"
 source="http://www.mpg123.org/download/$pkgname-$pkgver.tar.bz2"
 options="libtool"
-
 builddir="$srcdir"/$pkgname-$pkgver
-
-check() {
-	cd "$builddir"
-	make check
-}
 
 build() {
 	cd "$builddir"
@@ -34,9 +28,14 @@ build() {
 	make
 }
 
+check() {
+	cd "$builddir"
+	make check
+}
+
 package() {
 	cd "$builddir"
 	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="1b063a7a497d6f643b43a0e0db0e1a8951bf110cabf8f3dc63d7ed1b8e47ef4a42649622a5e4efb582479beacd7d3872b4f061716a5f6970b3f5bed7ef4f3fe9  mpg123-1.25.2.tar.bz2"
+sha512sums="a33666ae4aca7e7c1a93a6414d8c525ec19044c54f712d578180147d88e63033f7af2370b9ad22960cc3a0b454f15967b7a831cccc97e034c8855f70cdf1ab09  mpg123-1.25.10.tar.bz2"

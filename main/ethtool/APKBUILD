@@ -1,11 +1,11 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=ethtool
-pkgver=4.11
+pkgver=4.15
 pkgrel=0
 pkgdesc="gkernel ethtool"
-url="http://sourceforge.net/projects/gkernel/"
+url="https://sourceforge.net/projects/gkernel/"
 arch="all"
-license="GPL2"
+license="GPL-2.0"
 makedepends="linux-headers"
 source="http://www.kernel.org/pub/software/network/ethtool/ethtool-$pkgver.tar.xz"
 subpackages="$pkgname-doc"
@@ -32,4 +32,4 @@ package() {
 	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="177bbb725abc725dece99b4198f673b57ac9fc5c466aa36ac9e2a66b5535c82b5a27e916ef3e489232709e0b2d27d821acb4bea17d9b5a1940bf83e6a13ef445  ethtool-4.11.tar.xz"
+sha512sums="7ffd76b17b56de4182a14c2a77bf3026715f4af4c60809aed192f5631cb72173ed3c5d451e54711a73b65fee8339d58c857e83ddf60b85057bfed20863476527  ethtool-4.15.tar.xz"

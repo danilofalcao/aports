@@ -1,0 +1,47 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=mediainfo
+pkgver=18.03.1
+pkgrel=0
+pkgdesc="Supplies technical and tag information about media files (CLI)"
+url="https://mediaarea.net/en/MediaInfo"
+arch="all"
+license="BSD-2-Clause"
+makedepends="automake autoconf cmake libmediainfo-dev>=$pkgver libtool libzen-dev"
+source="https://mediaarea.net/download/source/$pkgname/$pkgver/${pkgname}_$pkgver.tar.bz2"
+builddir="$srcdir/MediaInfo"
+_clidir="$builddir/Project/GNU/CLI"
+
+prepare() {
+	default_prepare
+
+	rm -Rf "$builddir"/Project/MS*
+
+	cd "$_clidir"
+	./autogen.sh
+}
+
+build() {
+	cd "$_clidir"
+
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--libdir=/usr/lib \
+		--sysconfdir=/etc \
+		--enable-static=no
+	make
+}
+
+check() {
+	cd "$_clidir"
+	./mediainfo --version
+}
+
+package() {
+	cd "$_clidir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="eda13c7eae8cdf1f1171ab8af9eb124361cdb16f583ea4028c991c17cbc6e264edceb37b840fdd9bdc76d625b3ea7347e6faa355b1c38a5376c4269b72d97f56  mediainfo_18.03.1.tar.bz2"

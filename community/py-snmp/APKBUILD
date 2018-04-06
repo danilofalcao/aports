@@ -2,12 +2,13 @@
 # Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
 pkgname=py-snmp
 _pkgname=pysnmp
-pkgver=4.3.8
+pkgver=4.4.4
 pkgrel=0
 pkgdesc="A Python SNMP v1/v2c/v3 engine"
 url="http://pysnmp.sf.net/"
 arch="noarch"
 license="BSD"
+options="!check"
 depends="py-asn1 py-crypto"
 makedepends="python2-dev py-setuptools python3-dev"
 subpackages="py3-${pkgname#py-}:_py3 py2-${pkgname#py-}:_py2"
@@ -16,8 +17,8 @@ builddir="$srcdir/$_pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
-	python2 setup.py build || return 1
-	python3 setup.py build || return 1
+	python2 setup.py build
+	python3 setup.py build
 }
 
 package() {
@@ -45,4 +46,4 @@ _py3() {
 	_py python3
 }
 
-sha512sums="b8e5329f10f9032a6beb790b3eb7ec18f3ed3aeca011abef4a73a4cd6310e70a2a672e5028bddfc8885b8770c23b07f65f4877d06a70059822854529e7f1fd0f  pysnmp-4.3.8.tar.gz"
+sha512sums="960ac73b7356bb236d3853432c094d3aa86a343f5e211065689e6c784293748ec6f2c1c17bf9d96b4cbe2d9d476ebbacbaff4bed7d86370e5ef61e6f03ba8c0e  pysnmp-4.4.4.tar.gz"

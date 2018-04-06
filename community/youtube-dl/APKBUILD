@@ -3,13 +3,14 @@
 # Contributor: Timo Teräs <timo.teras@iki.fi>
 # Maintainer: Timo Teräs <timo.teras@iki.fi>
 pkgname=youtube-dl
-pkgver=2017.07.09
+pkgver=2018.04.03
 pkgrel=0
-pkgdesc="A small command-line program to download videos from YouTube"
+pkgdesc="Command-line program to download videos from YouTube"
 url="http://youtube-dl.org"
 arch="noarch"
 license="Unlicense"
-depends="python2 py-setuptools ffmpeg"
+depends="python3 ffmpeg"
+options="!check"  # FIXME: run provided tests
 subpackages="
 	$pkgname-doc
 	$pkgname-zsh-completion:zshcomp
@@ -20,14 +21,14 @@ builddir="$srcdir/$pkgname"
 
 prepare() {
 	cd "$builddir"
-	sed -i 's|etc/bash_completion.d|share/bash-completion/completions|' setup.py || return 1
-	sed -i 's|etc/fish/completions|share/fish/completions|' setup.py || return 1
+	sed -i setup.py \
+		-e 's|etc/bash_completion.d|share/bash-completion/completions|' \
+		-e 's|etc/fish/completions|share/fish/completions|'
 }
 
 package() {
 	cd "$builddir"
-	python2 setup.py install --root="$pkgdir/" --optimize=1 || return 1
-	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE" || return 1
+	python3 setup.py install --root="$pkgdir/" --optimize=1
 }
 
 zshcomp() {
@@ -36,7 +37,7 @@ zshcomp() {
 	install_if="$pkgname=$pkgver-r$pkgrel zsh"
 
 	install -Dm644 "$builddir"/$pkgname.zsh \
-		"$subpkgdir"/usr/share/zsh/site-functions/_$pkgname || return 1
+		"$subpkgdir"/usr/share/zsh/site-functions/_$pkgname
 }
 
 bashcomp() {
@@ -46,7 +47,7 @@ bashcomp() {
 
 	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
 	mv "$pkgdir"/usr/share/bash-completion/completions/$pkgname.bash-completion \
-		"$subpkgdir"/usr/share/bash-completion/completions/$pkgname || return 1
+		"$subpkgdir"/usr/share/bash-completion/completions/$pkgname
 }
 
 fishcomp() {
@@ -56,7 +57,7 @@ fishcomp() {
 
 	mkdir -p "$subpkgdir"/usr/share/fish/completions/
 	mv "$pkgdir"/usr/share/fish/completions/$pkgname.fish \
-		"$subpkgdir"/usr/share/fish/completions/ || return 1
+		"$subpkgdir"/usr/share/fish/completions/
 }
 
-sha512sums="f38b253abac9e8dc07210915f127dd34240af1be9150b3355faa6936b73729fc762ad5380dcff5133d5467c71079df56b58bf24fdb7f09adcc68778ca5971d44  youtube-dl-2017.07.09.tar.gz"
+sha512sums="a26c34c61bb9871706f39b48406e40abd7c037c444e9573343617f2f48a6516316f95de753cfd359e81fb77d2654746f23fe282e0664d02470cf8551247bb4d9  youtube-dl-2018.04.03.tar.gz"

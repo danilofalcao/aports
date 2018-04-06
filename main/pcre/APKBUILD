@@ -1,23 +1,25 @@
 # Contributor: Sergei Lukin <sergej.lukin@gmail.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=pcre
-pkgver=8.40
-pkgrel=2
+pkgver=8.42
+pkgrel=0
 pkgdesc="Perl-compatible regular expression library"
 url="http://pcre.sourceforge.net"
 arch="all"
-license="BSD"
+license="BSD-3-Clause"
 depends=
 makedepends=""
+checkdepends="paxmark"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-tools
 	libpcrecpp libpcre16 libpcre32"
 source="ftp://ftp.csx.cam.ac.uk/pub/software/programming/$pkgname/$pkgname-$pkgver.tar.bz2
-	CVE-2017-7186.patch
 	"
-
 # secfixes:
 #   8.40-r2:
-#   - CVE-2017-7186.patch
+#   - CVE-2017-7186
+#   7.8-r0:
+#   - CVE-2017-11164
+#   - CVE-2017-16231
 
 builddir="$srcdir/$pkgname-$pkgver"
 
@@ -36,15 +38,29 @@ build() {
 		--enable-pcre32 \
 		--with-match-limit-recursion=8192 \
 		--htmldir=/usr/share/doc/$pkgname-$pkgver/html \
-		--docdir=/usr/share/doc/$pkgname-$pkgver \
-		|| return 1
+		--docdir=/usr/share/doc/$pkgname-$pkgver
 
-	make || return 1
+	make
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
+}
+
+check() {
+	cd "$builddir"
+
+	# paxmark tests requiring JIT
+	for fn in pcre_jit_test pcretest; do
+		./$fn &>/dev/null < /dev/null || true
+		[ -x .libs/lt-$fn ] && paxmark -m .libs/lt-$fn
+	done
+
+	# skip locale specific tests
+	sed -i -e 's/do3=yes//g' RunTest
+
+	make check
 }
 
 libpcrecpp() {
@@ -71,5 +87,4 @@ tools() {
 	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
 }
 
-sha512sums="b4c27eafbdf33bd7a1384655b1936f4be3bc6745c072347eb26e988896c52664bd85ac42444da1be78b6e20f45b6c7e5921f5f20f5b0741b5bd3d9844e5bd4e2  pcre-8.40.tar.bz2
-3644a2d9895a974192dfe778e5dcdbf0eacc592ccedeb37caf3d9426668ee8fda5fc16f87e38c112943e619d1b35a498ccbf4b4a1c2da58821198bbcc180be31  CVE-2017-7186.patch"
+sha512sums="b47b923108f6ee0c31409b79d0888314271b482a22590e164d02f21d2112fba22dd0342c24f9ba0f5fcc5b8c65550bad08c476e30a2fc79b34ecf4601ed82f3d  pcre-8.42.tar.bz2"

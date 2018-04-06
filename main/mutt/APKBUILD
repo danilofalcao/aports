@@ -1,13 +1,13 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
-# Contributor: Andrew Manison<amanison@anselsystems.com>
+# Contributor: Andrew Manison <amanison@anselsystems.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=mutt
-pkgver=1.8.3
-pkgrel=0
-pkgdesc="a small but very powerful text-mode email client"
+pkgver=1.9.4
+pkgrel=1
+pkgdesc="Small and very powerful text-mode email client"
 url="http://www.mutt.org"
 arch="all"
-license="GPL"
+license="GPL-2.0-or-later"
 makedepends="cyrus-sasl-dev gdbm-dev gettext-dev gpgme-dev
 	libidn-dev ncurses-dev libressl-dev perl"
 options="suid !check"
@@ -44,10 +44,8 @@ package() {
 	cd "$builddir"
 	make DESTDIR="$pkgdir" install
 
-	rm "$pkgdir"/etc/*.dist \
-		"$pkgdir"/etc/mime.types \
-		"$pkgdir"/usr/bin/muttbug \
-		"$pkgdir"/usr/bin/flea
+	rm -f "$pkgdir"/etc/*.dist \
+		"$pkgdir"/etc/mime.types
 
 	# Don't tamper with the global configuration file.
 	# Many options set in the global config cannot be
@@ -57,4 +55,4 @@ package() {
 		"$pkgdir"/etc/Muttrc.gpg.dist
 }
 
-sha512sums="8cfb4b1d42add3e8b34ba140e606e57f98d98ca685538ecb159f584635c50a7b0afaf81e09361d52a39188d4bb59a7432d01d58d030a93b0d3d92f0ee4062048  mutt-1.8.3.tar.gz"
+sha512sums="b8266af8b487f5be238d03f717ddd69b3dc2eeb4e3ada2c2651c9ad7e0558b92f2c256361a4f688cf80c500c490d47c0e3ef5972bdf1208693da7868a58aca6b  mutt-1.9.4.tar.gz"

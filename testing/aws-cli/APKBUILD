@@ -1,17 +1,16 @@
 # Maintainer: Valery Kartel <valery.kartel@gmail.com>
 # Contributor: Valery Kartel <valery.kartel@gmail.com>
 pkgname=aws-cli
-pkgver=1.11.65
+pkgver=1.14.17
 pkgrel=0
 _python="python3"
 _libname=${pkgname/-/}
 pkgdesc="Universal Command Line Interface for Amazon Web Services"
 url="https://github.com/aws/aws-cli"
 arch="noarch"
-license="ASL 2.0"
-options="!check"
+license="Apache-2.0"
 provides=$_libname
-depends="$_python groff py-botocore py-jmespath py-s3transfer py-docutils py-colorama py-yaml py-rsa"
+depends="$_python groff py3-botocore py3-jmespath py3-s3transfer py3-docutils py3-colorama py3-yaml py3-rsa"
 makedepends="$_python-dev py-setuptools"
 subpackages="$pkgname-doc $pkgname-zsh-completion:zshcomp $pkgname-bash-completion:bashcomp $pkgname-completer"
 source="$pkgname-$pkgver.tar.gz::https://github.com/aws/$pkgname/archive/$pkgver.tar.gz"
@@ -22,9 +21,14 @@ build() {
 	$_python setup.py build
 }
 
+check() {
+	cd "$builddir"
+	$_python setup.py check
+}
+
 package() {
 	cd "$builddir"
-	$_python setup.py install --prefix=/usr --root="$pkgdir" || return 1
+	$_python setup.py install --prefix=/usr --root="$pkgdir"
 	rm -fr "$pkgdir"/usr/bin/aws.cmd \
 		$(find "$pkgdir" -name "*.egg-info")
 }
@@ -33,7 +37,7 @@ bashcomp() {
 	depends="$pkgname-completer"
 	pkgdesc="$pkgdesc (bash completions)"
 	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
-	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions || return 1
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions
 	mv "$pkgdir"/usr/bin/aws_bash_completer \
 		"$subpkgdir"/usr/share/bash-completion/completions
 }
@@ -42,7 +46,7 @@ zshcomp() {
 	depends="$pkgname-completer"
 	pkgdesc="$pkgdesc (zsh completions)"
 	install_if="$pkgname=$pkgver-r$pkgrel zsh"
-	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions || return 1
+	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions
 	mv "$pkgdir"/usr/bin/aws_zsh_completer.sh \
 		"$subpkgdir"/usr/share/zsh/site-functions
 }
@@ -53,17 +57,17 @@ completer() {
 	cd "$pkgdir"
 	local file; for file in $(find . -name "*completer*"); do
 		echo $(dirname $file)
-		mkdir -p "$subpkgdir"/$(dirname $file) || return 1
-		mv "$pkgdir"/$file "$subpkgdir"/$file || return 1
+		mkdir -p "$subpkgdir"/$(dirname $file)
+		mv "$pkgdir"/$file "$subpkgdir"/$file
 	done
 }
 
 doc() {
-	default_doc || return 1
+	default_doc
 	local path=$($_python -c "import sys;print(sys.path[-1])")/$_libname
-	mkdir -p "$subpkgdir"/$path || return 1
+	mkdir -p "$subpkgdir"/$path
 	mv "$pkgdir"/$path/examples "$pkgdir"/$path/topics \
 		"$subpkgdir"/$path/
 }
 
-sha512sums="9fade4709e0a6b7a8eeab390e8d260cf1712cfb20ba93834c286b946560fa28fac99fbf222d25602309738f0f2bdd7b096e89b5d181d9b784b1b28e66b7d6535  aws-cli-1.11.65.tar.gz"
+sha512sums="32daf9b58887d9630348025579f75971fe202b49b0671413ac0987bf0a3ac7d187f7f2f225c6e9258f557becfdec1f1be24625fb5088c37da834552d2119a626  aws-cli-1.14.17.tar.gz"

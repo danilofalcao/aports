@@ -1,34 +1,35 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=thunar
-pkgver=1.6.11
-pkgrel=0
+pkgver=1.6.12
+pkgrel=1
 pkgdesc="File manager for Xfce"
 url="http://thunar.xfce.org"
 arch="all"
-license="GPL2 LGPL2"
+license="GPL-2.0 LGPL-2.0"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
 depends="desktop-file-utils hicolor-icon-theme shared-mime-info"
-depends_dev="gtk+2.0-dev glib-dev exo-dev"
+depends_dev="exo-dev"
 makedepends="$depends_dev libexif-dev xfce4-panel-dev pcre-dev libgudev-dev
 	libnotify-dev startup-notification-dev libxfce4ui-dev dbus-glib-dev
-	gtk-doc"
+	gtk-doc gtk+2.0-dev glib-dev"
 install=
 source="http://archive.xfce.org/src/xfce/thunar/${pkgver%.*}/Thunar-$pkgver.tar.bz2
 	thunar-sendto-audacious-playlist.desktop
 	thunar-sendto-bluetooth.desktop
 	"
 
-_builddir="$srcdir"/Thunar-$pkgver
+builddir="$srcdir"/Thunar-$pkgver
 
 prepare() {
-	cd "$_builddir"
+	cd "$builddir"
 	# fix icon in thunar-sendto-email.desktop
 	sed -i 's!internet-mail!mail-message-new!' \
 		plugins/thunar-sendto-email/thunar-sendto-email.desktop.in.in
+	default_prepare
 }
 
 build() {
-	cd "$_builddir"
+	cd "$builddir"
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
@@ -42,27 +43,31 @@ build() {
 		--enable-dbus \
 		--enable-gio-unix \
 		--enable-gudev \
-		--enable-gtk-doc \
-		|| return 1
-	make || return 1
+		--enable-gtk-doc
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
-	cd "$_builddir"
+	cd "$builddir"
 	local f
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 	sed -i -e 's:x-directory/gnome-default-handler;::' \
 		"$pkgdir"/usr/share/applications/Thunar-folder-handler.desktop
 	for f in $source; do
 		case $f in
 		thunar-sendto*.desktop)
 			install -m644 "$srcdir"/$f \
-				"$pkgdir"/usr/share/Thunar/sendto/ || return 1
+				"$pkgdir"/usr/share/Thunar/sendto/
 			;;
 		esac
 	done
 }
 
-sha512sums="05cdce5bb741f2d7a6ddb2f7d30dac4dc4ff539e41963b31b7f694e69be5b8ae211c442e943dc8745f8c0a634f2eb18734b7a3ea8c9c7d380c1af87a01b64e03  Thunar-1.6.11.tar.bz2
+sha512sums="d18e0fb6b58a65889dc47852a4c513acb7ff9a99fd70d34cbc6b2806d7818893b3c999c0a63f1b7af599d3ff4336b9637944989b97e5cc7431761ce493d2259d  Thunar-1.6.12.tar.bz2
 dce525f22abf8e723111673b8fdad48079d5379cef49cc013383bb0944274cdd0de1dda6e8894dd8c9efb54cc9eea2baf8f4c76265665b84f3f58aeb01c72390  thunar-sendto-audacious-playlist.desktop
 b4e8024e093b8e3f9bf5d460335fd9d19c1e394383bd58a7ac05c720103612dea9dde8a02f090f0af09d89e6644b292236ef257dd1790eccd627efce0577828e  thunar-sendto-bluetooth.desktop"

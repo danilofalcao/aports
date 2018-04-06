@@ -2,7 +2,7 @@
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
 pkgname=ruby-nokogiri
 _gemname=${pkgname#ruby-}
-pkgver=1.8.0
+pkgver=1.8.2
 pkgrel=0
 pkgdesc="An HTML, XML, SAX, and Reader parser"
 url="http://nokogiri.org/"
@@ -64,7 +64,7 @@ check() {
 }
 
 package() {
-	local gemdir="$pkgdir/$(ruby -rubygems -e 'puts Gem.default_dir')"
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
 
 	cd "$builddir"/dist
 
@@ -78,4 +78,4 @@ package() {
 		build_all test_all Rakefile .[a-z]* *.md *.rdoc *.txt *.yml || true
 }
 
-sha512sums="958b402325e8428d7a6299356dd31cfa191fd6e8ced78e4333395d6a18718c838b810c2dc9c0864553e5e247ed92d6629b985f4076241ad45affd04cae11a75f  nokogiri-1.8.0.gem"
+sha512sums="e0ab71853440ca599ff693da809b8776ebc9a8a8a68035ef79b31bdee3b3dccbe4023750972b5fbed6f908e171633edee7d8f7276c35dba20fc4d2c7dbf6cf2f  nokogiri-1.8.2.gem"

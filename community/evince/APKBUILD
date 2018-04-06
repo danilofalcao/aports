@@ -2,33 +2,26 @@
 # Contributor: William Pitcock <nenolod@dereferenced.org>
 # Maintainer: William Pitcock <nenolod@dereferenced.org>
 pkgname=evince
-pkgver=3.24.0
-pkgrel=3
+pkgver=3.28.0
+pkgrel=0
 pkgdesc="simple document viewer for GTK+"
 url="http://projects.gnome.org/evince/"
 arch="all"
-license="GPL"
+license="GPL-2.0-or-later"
 depends="adwaita-icon-theme"
 depends_dev="gtk+3.0-dev poppler-dev libsm-dev libevent-dev libxrandr-dev
 	libx11-dev libxcursor-dev libxcomposite-dev libxi-dev util-linux-dev
-	tiff-dev gobject-introspection-dev libxml2-dev"
+	tiff-dev gobject-introspection-dev libxml2-dev py-six libspectre-dev"
 makedepends="$depends_dev intltool itstool gnome-doc-utils
 	adwaita-icon-theme-dev gnome-common automake autoconf
 	gtk-doc yelp-tools"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-lang $pkgname-libs"
-source="http://ftp.gnome.org/pub/GNOME/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz
-	gnome-3-24.patch"
+source="https://download.gnome.org/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz"
 builddir="${srcdir}/${pkgname}-${pkgver}"
 
 # secfixes:
 #   3.24.0-r2:
 #     - CVE-2017-1000083
-
-prepare() {
-	default_prepare
-	cd "$builddir"
-	NOCONFIGURE=1 ./autogen.sh
-}
 
 build() {
 	cd "$builddir"
@@ -50,6 +43,11 @@ package() {
 	make DESTDIR="$pkgdir" install
 }
 
+check() {
+	cd "$builddir"
+	make check
+}
+
 libs() {
 	default_libs
 	mv "$pkgdir"/usr/lib/* "$subpkgdir"/usr/lib/
@@ -62,5 +60,4 @@ doc() {
 	fi
 }
 
-sha512sums="b793c44b2976abe58461adfdb0b1874af8d6bafaf9b80a851d94b776f9d50f6a81774bcb5b35cd59a9ad3afeea9a8b88018aa85d670373c7c2fa9617407a09c4  evince-3.24.0.tar.xz
-1517a993d4fb590ca98a819358b1a8fcf92643f00b904538721cc1f5cfb75197277ac09a1fb654bd946b284c6fba53e94e71bdf5f37b230f8c1bc65441d5ad4a  gnome-3-24.patch"
+sha512sums="5550befb469f84cc2de16373983daea088ce1cd439f31c298a064f1fb7915496e073759e2d8d431c0e5cc379ae2a41363f99d745b8cd7c078de0341f107e8aaf  evince-3.28.0.tar.xz"

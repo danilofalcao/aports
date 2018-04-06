@@ -1,9 +1,10 @@
 # Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
-# Maintainer: Eivind Uggedal <eivind@uggedal.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=go
-pkgver=1.8.3
+pkgver=1.10.1
 # This should be the latest commit on the corresponding release branch
-_toolsver="5682db0e919ed9cfc6f52ac32e170511a106eb3b"
+# https://github.com/golang/tools/commits/release-branch.go1.10
+_toolsver="25101aadb97aa42907eee6a238d6d26a6cb3c756"
 pkgrel=0
 pkgdesc="Go programming language compiler"
 url="http://www.golang.org/"
@@ -17,10 +18,14 @@ provides="go-bootstrap=$pkgver-r$pkgrel"
 install=""
 subpackages="$pkgname-doc"
 source="http://golang.org/dl/go${pkgver/_/}.src.tar.gz
-	go-tools-${pkgver/_/}.tar.gz::https://github.com/golang/tools/archive/${_toolsver}.tar.gz
+	go-tools-${pkgver/_/}-$_toolsver.tar.gz::https://github.com/golang/tools/archive/${_toolsver}.tar.gz
 	default-buildmode-pie.patch
 	set-external-linker.patch
 	"
+
+# secfixes:
+#   1.9.4-r0:
+#     - CVE-2018-6574
 
 # NOTE: building go for x86 with grsec kernel requires:
 #           sysctl -w kernel.modify_ldt=1
@@ -30,7 +35,6 @@ if [ "$CBUILD" = "$CTARGET" ]; then
 	provides="go-bootstrap=$pkgver-r$pkgrel"
 	subpackages="$subpackages $pkgname-tools"
 	_gotools="cover godoc stringer"
-	_gocross="darwin freebsd openbsd windows"
 else
 	pkgname="go-bootstrap"
 	makedepends="go $makedepends"
@@ -42,9 +46,6 @@ else
 fi
 
 _tooldir="$srcdir"/tools-${_toolsver}
-for os in $_gocross; do
-	subpackages="$subpackages $pkgname-cross-${os}:_crosspkg"
-done
 
 case "$CTARGET_ARCH" in
 aarch64)export GOARCH="arm64" ;;
@@ -54,6 +55,10 @@ s390x)  export GOARCH="s390x" ;;
 x86)    export GOARCH="386" GO386=387 ;;
 x86_64) export GOARCH="amd64" ;;
 ppc64le) export GOARCH="ppc64le" ;;
+mips)   export GOARCH="mips" ;;
+mips64) export GOARCH="mips64" ;;
+mips64el) export GOARCH="mips64le" ;;
+mipsel) export GOARCH="mipsle" ;;
 *)      die "Unsupported arch" ;;
 esac
 
@@ -74,12 +79,6 @@ build() {
 	done
 
 	./make.bash
-	for os in $_gocross; do
-                local hostarch="$GOARCH"
-		for arch in "386" "amd64"; do
-			GOHOSTARCH=$hostarch GOARCH=$arch GOOS=$os ./make.bash
-		done
-	done
 
 	# copied from bootstrap.bash to fixup cross-built bootstrap go
 	if [ "$CBUILD" != "$CTARGET" ]; then
@@ -100,6 +99,11 @@ build() {
 	for tool in $_gotools; do
 		"$GOROOT"/bin/go install golang.org/x/tools/cmd/$tool
 	done
+}
+
+check() {
+	cd "$builddir"
+	./bin/go run doc/play/hello.go
 }
 
 package() {
@@ -152,19 +156,7 @@ tools() {
 	done
 }
 
-_crosspkg() {
-	local name="$(echo "${subpkgname}" | cut -d '-' -f3)"
-	pkgdesc="Go cross compiler for $name"
-	depends="$pkgname"
-
-	mkdir -p "$subpkgdir"/usr/lib/go/pkg/tool/
-	mv "$pkgdir"/usr/lib/go/pkg/tool/${name}_* \
-		"$subpkgdir"/usr/lib/go/pkg/tool/
-	mv "$pkgdir"/usr/lib/go/pkg/${name}_* \
-		"$subpkgdir"/usr/lib/go/pkg/
-}
-
-sha512sums="c6e67dd9e3acdf2aa776d920f91f3fb1802d624ba5d51e06b2c7c6b71bcfaf91f4024f7a442cecde69175c589f7f1163f0ae86d887e15ddde710e53ce0961284  go1.8.3.src.tar.gz
-343fca47f250278b22df1c1cd92cce91e01009043d05d8ccce095e4386fa0f5ca8ccaa58232635332c7288ceca9d2a240f774f8bb3b08129a681a582cba60248  go-tools-1.8.3.tar.gz
-9857c71108652b8907117abf0b41ded5e332bcf864320235aadbf3a7b6afbfc0e5051f91fe143f0654b4c8d6fe9adbe7d22ca2ce50cd75c0ab7a050dfb437773  default-buildmode-pie.patch
-6b36f3780ab10e5c4902473a8ab5c0417220ece584b537517e9e60979bdc5a548ed14dd2546605392c89ec5ea6691769d337d34e2e19b92eba5bbca1898f4ada  set-external-linker.patch"
+sha512sums="13f6b0643a4f92eeca04444b9fa10de38fc3427daea9aa3227cf9a5738ffee1a3f2e355ba5faf711b8506f7de118bdcd3b9064b65407a22613523e29ffd73415  go1.10.1.src.tar.gz
+bb44f4941cc49f8271c1fd46d94c6c165796d919f156a4fd608158247f3f31c4d170e0d5ae67766ee22cb0eb844a106c7fe101fb7d20a2b6414e43e68ffbd6b1  go-tools-1.10.1-25101aadb97aa42907eee6a238d6d26a6cb3c756.tar.gz
+a8f3afd97992f03ccf2680cde214eefccac47daeb9eeb689b5e0b206ea3c19cfb23d448a4eb532894d830d4b91cd97b249e88f04c17feba02d9e243b40243bd0  default-buildmode-pie.patch
+6abfdd8521b61ce1e823465f9b950a75dc235d7d58cc4c641c4e7830f7da28b8c57be53aef85641ff79bc95d7bd47bb0796659309d9d8e7907e29df520b150b0  set-external-linker.patch"

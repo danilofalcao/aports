@@ -1,34 +1,34 @@
 # Contributor: Francesco Colista <fcolista@alpinelinux.org>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=icinga2
-pkgver=2.6.3
-pkgrel=1
+pkgver=2.8.2
+pkgrel=2
 pkgdesc="An open source host, service and network monitoring program"
 url="http://www.icinga.org"
 arch="all !armhf"
 license="GPL"
 depends="monitoring-plugins"
 makedepends="$depends_dev cmake bison flex boost-dev yajl-dev
-	postgresql-dev mariadb-dev libressl-dev libedit-dev"
+	postgresql-dev mariadb-connector-c-dev libressl-dev libedit-dev"
 install="$pkgname.pre-install $pkgname.post-install"
 pkgusers="icinga"
 pkggroups="icinga icingacmd"
-subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
+subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch $pkgname-vim::noarch"
 source="$pkgname-$pkgver.tar.gz::https://github.com/Icinga/$pkgname/archive/v$pkgver.tar.gz
 	$pkgname.initd"
 
 builddir="$srcdir/$pkgname-$pkgver"
-
-check() {
-	cd "$builddir"
-	make test
-}
 
 prepare() {
 	cd "$builddir"
 	rm -r third-party/yajl
 	mkdir -p build
 	default_prepare
+}
+
+check() {
+	cd "$builddir"
+	make test
 }
 
 build() {
@@ -111,6 +111,13 @@ bashcomp() {
 	mv "$pkgdir"/etc/bash_completion.d/$pkgname "$subpkgdir"/usr/share/bash-completion/completions/$pkgname
 }
 
+vim() {
+    pkgdesc="$pkgdesc (vim syntax)"
+    depends=
 
-sha512sums="c6512411689951611b19a5e80bf360b4cf5ddbf95dcb47cb393f90798e36c052c68b79a5a33a72cd6205ab58d4bb3ac44ec4cd82f9d1d17dc3c0e550723272b3  icinga2-2.6.3.tar.gz
+    mkdir -p "$subpkgdir"/usr/share/vim
+    cp -r "$builddir"/tools/syntax/vim "$subpkgdir"/usr/share/vim/vimfiles
+}
+
+sha512sums="55a9791fa14d0e3e559b3083ec83ad301b62a677a1b56ad30227b1a3591612e2fe536a34a25705fb935a6ca8e42f45ff006f9856b47103da054db15582455579  icinga2-2.8.2.tar.gz
 f368ea15be7054503924696129fe6b413f9a5cb5344af89f9a0f84df98ac7ef8ab135de60845deced55a982b6b037ce1a00b437189c78fcab981d1e3babec2d5  icinga2.initd"

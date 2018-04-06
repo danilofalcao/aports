@@ -1,17 +1,17 @@
 # Contributor: André Klitzing <aklitzing@gmail.com>
 # Maintainer: André Klitzing <aklitzing@gmail.com>
 pkgname=monero
-pkgver=0.10.3.1
-pkgrel=2
+pkgver=0.12.0.0
+pkgrel=1
 pkgdesc="Secure, private, untraceable cryptocurrency"
 url="https://getmonero.org/"
 arch="all"
 license="BSD"
-makedepends="unbound-dev libressl-dev boost-dev miniupnpc-dev cmake"
+makedepends="unbound-dev libressl-dev boost-dev miniupnpc-dev cmake cppzmq zeromq-dev"
+options="!check"
 source="$pkgname-$pkgver.tar.gz::https://github.com/monero-project/$pkgname/archive/v$pkgver.tar.gz
 	easylogging.patch
-	libunwind.patch
-	fix-build-flags-for-ppc64le.patch
+	disable-aes-on-s390x.patch
 	"
 builddir="$srcdir/"$pkgname-$pkgver
 
@@ -28,7 +28,6 @@ package() {
 	install -m755 -t "${pkgdir}"/usr/bin build/bin/*
 }
 
-sha512sums="6856e6078eee5a9036cf7276490a00121b6670b417fd9d8ba8360746af320813fb26f3021079483a61a4bb0179627cfe687435a4146a4ce3cf4d4ad5d500ea95  monero-0.10.3.1.tar.gz
-9d431f87fae5d1fd0d7bb893164c8124bebf682bd3c14b1c4143091837912e36830aa462b05505637f1583595e6259b2d3bbef4706f8875b7ae24c3d0515b255  easylogging.patch
-7dba2020c7cd8e6bcaad778089c4f28132a27c8a18db656c08ab112f81b0faab0eb6aa27f5eafe33f604599db687297627f78cc3ee89f61538007cf8d9c13a42  libunwind.patch
-854d44aee308a5c86e51553767e2b58b25713a7ef9a2ed8650b00d8372f2c19a2d451b87463799495c627b3c133a8c5f1013cdf145c68a82a241b3cfa26b3ec4  fix-build-flags-for-ppc64le.patch"
+sha512sums="780465569cdd7cf7f38e5e6dc88f420f411e3768ee0e0421cfb2f1ccb48b2fa93261d8f806f51f7fde44f622395c9b90809fea7bb50ad3470a34b8df80bf882e  monero-0.12.0.0.tar.gz
+71bb3dd1943dd0850221445e93e07597019691a94bf776950ee2bdb334a670d9ec64fb036f42c5df2846493a0aa4f803c7cb46560fcdb5264cf3d8909d66cef0  easylogging.patch
+b6f2a60822d0ad59b15766d84ec69f99aedac01697097244683f52e9bc24e98f2ba3ddf58d7d26055ff075dcc6894f173099b1213b04f281435ee051ad967e90  disable-aes-on-s390x.patch"

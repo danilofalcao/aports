@@ -2,12 +2,13 @@
 # Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
 pkgname=py-dulwich
 _pkgname=dulwich
-pkgver=0.15.0
-pkgrel=1
+pkgver=0.19.0
+pkgrel=0
 pkgdesc="A python implementation of the Git file formats and protocols"
 url="https://www.dulwich.io"
 arch="all"
-license="GPL2+ or ASL 2.0"
+license="GPL-2.0-or-later or Apache-2.0"
+options="!check" # Tests are failing (http-backend)
 makedepends="python2-dev python3-dev py-setuptools"
 subpackages="py2-${pkgname#py-}:_py2 py3-${pkgname#py-}:_py3"
 source="https://www.dulwich.io/releases/$_pkgname-$pkgver.tar.gz"
@@ -15,9 +16,15 @@ builddir="$srcdir"/$_pkgname-$pkgver
 
 build() {
 	cd "$builddir"
-	python2 setup.py build || return 1
-	python3 setup.py build || return 1
+	python2 setup.py build
+	python3 setup.py build
 }
+
+#check() {
+#	cd "$builddir"
+#	PYTHONHASHSEED=random PYTHONPATH=.: python -m unittest dulwich.tests.test_suite
+#	PYTHONHASHSEED=random PYTHONPATH=.: python3 -m unittest dulwich.tests.test_suite
+#}
 
 package() {
 	mkdir -p "$pkgdir"
@@ -41,6 +48,4 @@ _py() {
 	$python setup.py install --prefix=/usr --root="$subpkgdir" || return 1
 }
 
-md5sums="398734f570f140806fdd7958575d5db0  dulwich-0.15.0.tar.gz"
-sha256sums="6f0a09d93f01caf1ba054b3f751d5cc1f0e6afc5c97fd23d67d7acf92f0d0b16  dulwich-0.15.0.tar.gz"
-sha512sums="a0d6b56281513d16e830f234a9baa285b63098256ced7884b084fcd14210b60f2cd5e80bc18b74a7adcab509d5a9ebbb399746fd074083174b5922315af55cc4  dulwich-0.15.0.tar.gz"
+sha512sums="859e74ef6525b296fcf5dd5aa3898a1cde552a2ce1d7f1ad6fa74dd42b8eee1b459fd4b7eb55cc7e1a39b529060b4ec9800c9d284c31c5361f11f190b8d9a493  dulwich-0.19.0.tar.gz"

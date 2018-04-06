@@ -7,7 +7,7 @@
 #     - CVE-2017-8301
 #
 pkgname=libressl
-pkgver=2.5.5
+pkgver=2.7.2
 _namever=${pkgname}${pkgver%.*}
 pkgrel=0
 pkgdesc="Version of the TLS/crypto stack forked from OpenSSL"
@@ -15,17 +15,28 @@ url="http://www.libressl.org/"
 arch="all"
 license="custom"
 depends=""
-makedepends_build=""
+makedepends_build="automake autoconf libtool"
 makedepends_host="linux-headers"
-makedepends="$makedepends_host"
+makedepends="$makedepends_host $makedepends_build"
 replaces="openssl"
 subpackages="$pkgname-dbg $_namever-libcrypto:_libs $_namever-libssl:_libs
 	$_namever-libtls:_libs $pkgname-dev $pkgname-doc"
-source="http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/$pkgname-$pkgver.tar.gz"
+source="http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/$pkgname-$pkgver.tar.gz
+	starttls-ldap.patch
+	ssl-libcompat.patch
+	"
 builddir="$srcdir/$pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+
+	cd "$builddir"
+	autoreconf -vif
+}
 
 build() {
 	cd "$builddir"
+
 	CFLAGS="-L$CBUILDROOT/usr/lib $CFLAGS" \
 	./configure \
 		--build=$CBUILD \
@@ -34,19 +45,24 @@ build() {
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--mandir=/usr/share/man \
-		--localstatedir=/var \
-		|| return 1
-	make || return 1
+		--localstatedir=/var
+	make
+}
+
+check() {
+	cd "$builddir"
+	make -j1 check
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+
+	make DESTDIR="$pkgdir" install
 	install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
 }
 
 dev() {
-	default_dev || return 1
+	default_dev
 	replaces="openssl-dev"
 }
 
@@ -60,6 +76,11 @@ _libs() {
 		mv $f "$subpkgdir"/lib/
 		ln -s ../../lib/${f##*/} "$subpkgdir"/usr/lib/${f##*/}
 	done
+	if [ "$name" = "libcrypto" ]; then
+		mv "$pkgdir"/etc "$subpkgdir"
+	fi
 }
 
-sha512sums="3f576e74ddea17bd72e1bfbe0b57b94e1a2a9e6fa56cee50624cd8d18f0a8674273086225669e6ece56e6b859d2376e36e2c140d37acb52d4cd79374c4ba7096  libressl-2.5.5.tar.gz"
+sha512sums="12d00d057d449eb4119fc2f07034ebc0f1bbcb1602c0e07ef03b50440045eafd70594ddee352946cd9409aed8aceeb6988ba1643f582566fe3498499d94ece49  libressl-2.7.2.tar.gz
+9f1628fbc2a697b6570353920d784b161ca0a122047066d8bee15225bad1e5271aa2ed72b145506bcd4ffe58b35da2caf38c4a048db7e014dabd16b5eba44581  starttls-ldap.patch
+ef8150843f5aae577a859198439673591764fb3ab1da03436607328962f084356fd7f793484c3ad5f2294bd9e8dad15644c311b0da811acbc83eed4b71c0145a  ssl-libcompat.patch"

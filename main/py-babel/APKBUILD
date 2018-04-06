@@ -2,7 +2,7 @@
 # Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
 pkgname=py-babel
 _pkgname=Babel
-pkgver=2.4.0
+pkgver=2.5.3
 pkgrel=0
 pkgdesc="Python i18n tool"
 url="http://babel.pocoo.org/"
@@ -45,4 +45,4 @@ _py() {
 	$python setup.py install --prefix=/usr --root="$subpkgdir"
 }
 
-sha512sums="4e1341144dfb319c172a446facc47204c9b9f49972c8646b62e082975d8ec41c35e503e610d7114ef5346a5c073e87ed8d40a65a60d9540fb7ca947681cc0beb  Babel-2.4.0.tar.gz"
+sha512sums="1a41f69141da9f66e27110e7a1a5955f76d8ae9353ff7e54182c5bb6ca16e8b4799031e4df1049af54de513da9f101e171e4312b2e7775f2cab9116d5b50c0fb  Babel-2.5.3.tar.gz"

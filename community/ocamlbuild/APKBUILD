@@ -1,35 +1,71 @@
 # Contributor: Jon Ong <jonongjs@rottenmage.com>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Anil Madhavapeddy <anil@recoil.org>
 pkgname=ocamlbuild
-pkgver=0.9.3
-pkgrel=1
-pkgdesc="Generic build tool with built-in rules for building OCaml library and programs."
+pkgver=0.12.0
+pkgrel=3
+pkgdesc="Generic build tool with built-in rules for building OCaml library and programs"
 url="https://github.com/ocaml/ocamlbuild"
-arch="all !x86 !armhf !s390x" #ocaml not avail on excluded platforms
-license="LGPL2"
-depends=""
+arch="all !x86 !armhf !s390x"  # limited by ocaml aport
+license="LGPL-2.0-or-later-WITH-linking-exception"
+checkdepends="ocaml-compiler-libs ocaml-findlib"
+depends="ocaml-$pkgname=$pkgver-r$pkgrel cmd:tput"
 makedepends="ocaml"
-options=""
-install=""
-subpackages=""
-
-source="${pkgname}-${pkgver}.tar.gz::https://github.com/ocaml/ocamlbuild/archive/${pkgver}.tar.gz"
-
+subpackages="$pkgname-doc ocaml-$pkgname-dev:_libdev ocaml-$pkgname:_lib"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ocaml/$pkgname/archive/$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgver"
+
 build() {
 	cd "$builddir"
 
-	make configure OCAML_NATIVE=true \
+	make configure \
+		OCAML_NATIVE=true \
 		OCAMLBUILD_BINDIR="/usr/bin" \
-		OCAMLBUILD_LIBDIR="/usr/lib/ocaml" || return 1
-	make || return 1
+		OCAMLBUILD_LIBDIR="/usr/lib/ocaml"
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
 }
 
 package() {
 	cd "$builddir"
 
 	make DESTDIR="$pkgdir" install
+
+	# Remove annotation files.
+	rm -f "$pkgdir"/usr/lib/ocaml/$pkgname/*.cmt*
+
+	# Keep only native binary.
+	cd "$pkgdir"/usr/bin
+	rm ocamlbuild.byte
+	mv ocamlbuild.native ocamlbuild
 }
-md5sums="d5ba7ee06a51a3333f2168cd431df4ae  ocamlbuild-0.9.3.tar.gz"
-sha256sums="32e4824906888c61244909eab0d2c22d31f18fc9579873a070a4cf7947c2c0a9  ocamlbuild-0.9.3.tar.gz"
-sha512sums="49ab3a13d48f8f554c85ebc8ce9cbc5a5e63112c2d50215a6f4be78cc21c6e93bd5d657ea45584cfbfa00d182d99adad0fbb706e8121b71ea3ecf4830fd947dd  ocamlbuild-0.9.3.tar.gz"
+
+_libdev() {
+	pkgdesc="$pkgdesc (development files)"
+	depends="ocaml-$pkgname=$pkgver-r$pkgrel"
+	replaces="$pkgname"  # for backward compatibility
+
+	local file; for file in '*.a' '*.cmx' '*.cmxa' '*.mli' '*.o'; do
+		_submv "usr/lib/ocaml/$pkgname/$file"
+	done
+}
+
+_lib() {
+	pkgdesc="$pkgdesc (library)"
+	replaces="$pkgname"  # for backward compatibility
+
+	_submv usr/lib/ocaml
+}
+
+_submv() {
+	local path="$1"
+	mkdir -p "$subpkgdir"/${path%/*}
+	mv "$pkgdir"/$path "$subpkgdir"/${path%/*}/
+	rmdir -p "$pkgdir"/${path%/*} 2>/dev/null || true
+}
+
+sha512sums="0755a8410a1e083d344e2389bbff06ae2ad5daaf9b186147fd0d2fa094bdc3a2e8e94e2a1e666a63276d10899274b905535300f47d50e747e86f17cf562abe08  ocamlbuild-0.12.0.tar.gz"

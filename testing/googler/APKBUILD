@@ -1,25 +1,61 @@
 # Contributor: Ivan Tham <pickfire@riseup.net>
 # Maintainer: Ivan Tham <pickfire@riseup.net>
 pkgname=googler
-pkgver=2.9
+pkgver=3.5
 pkgrel=0
-pkgdesc="Google Search, Google Site Search, Google News from the terminal."
+pkgdesc="Google Search, Google Site Search, Google News from the terminal"
 url="https://github.com/jarun/googler"
 arch="noarch"
-license="GPL3"
+license="GPL-3.0-or-later"
 depends="python3"
-subpackages="$pkgname-doc"
-source="$pkgname-$pkgver.tar.gz::https://github.com/jarun/${pkgname}/archive/v${pkgver}.tar.gz"
-builddir="$srcdir/"$pkgname-$pkgver
+subpackages="$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-fish-completions:fishcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/jarun/$pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
-	make disable-self-upgrade || return 1
+	make disable-self-upgrade
+}
+
+check() {
+	cd "$builddir"
+	./googler --help > /dev/null
 }
 
 package() {
 	cd "$builddir"
-	make install DESTDIR="$pkgdir" PREFIX=/usr || return 1
+	make install DESTDIR="$pkgdir" PREFIX=/usr
 }
 
-sha512sums="0fbeb2ca1a70f37ee35b80afebad6e587f42f2b9cae521ee9f057a82cb863509f686ef60b9428244b75a43bda6963b5805d9339e76ffb060bff7f40d8aeabe0c  googler-2.9.tar.gz"
+bashcomp() {
+        pkgdesc="Bash completions for $pkgname"
+        install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+        mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
+        install -Dm644 "$builddir"/auto-completion/bash/* \
+                "$subpkgdir"/usr/share/bash-completion/completions/
+}
+
+fishcomp() {
+        pkgdesc="Fish completions for $pkgname"
+        install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+        mkdir -p "$subpkgdir"/usr/share/fish/completions/
+        install -Dm644 "$builddir"/auto-completion/fish/* \
+                "$subpkgdir"/usr/share/fish/completions/
+}
+
+zshcomp() {
+        pkgdesc="Zsh completions for $pkgname"
+        install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+        mkdir -p "$subpkgdir"/usr/share/zsh/site-functions
+        install -Dm644 "$builddir"/auto-completion/zsh/* \
+                "$subpkgdir"/usr/share/zsh/site-functions/
+}
+
+sha512sums="fd3cd58ff6c492b04a8c0b271207452991155c571fc31f237eb13fe8ccc08cc3096a994085daa0001b22307e99516dba24af44fd43ddc88d2eaeda5a975cbe9a  googler-3.5.tar.gz"

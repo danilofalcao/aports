@@ -1,0 +1,42 @@
+# Contributor: Steve McMaster <code@mcmaster.io>
+# Maintainer: Steve McMaster <code@mcmaster.io>
+pkgname=libhtp
+pkgver=0.5.26
+pkgrel=0
+pkgdesc="HTTP normalizer and parser library"
+url="https://github.com/OISF/libhtp"
+arch="all"
+license="BSD"
+# the zlib-dev dependency is not listed in the .pc file but the headers
+# needs zlib.h, so we add explicit to depends_dev
+depends_dev="zlib-dev"
+makedepends="$depends_dev automake autoconf libtool"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/OISF/libhtp/archive/$pkgver.tar.gz
+"
+
+builddir="$srcdir/$pkgname-$pkgver"
+build() {
+	cd "$builddir"
+	autoreconf -vif
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		|| return 1
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+sha512sums="a875e32e378e56c4c24d14c0242859dc81bee1898f4a60e7c6ab622baf21b55247b1d6f9ecd90f45e6602ccf1903356a786e6463bc2d359abb85f583b0f8e71a  libhtp-0.5.26.tar.gz"

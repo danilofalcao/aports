@@ -2,12 +2,12 @@
 # Contributor: Carlo Landmeter <clandmeter@gmail.com>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=duply
-pkgver=2.0.2
+pkgver=2.0.4
 pkgrel=0
 pkgdesc="Wrapper for duplicity"
 url="http://duply.net"
 arch="noarch"
-license="GPLv2"
+license="GPL-2.0"
 depends="duplicity bash"
 depends_dev=""
 makedepends="$depends_dev txt2man"
@@ -31,4 +31,4 @@ package() {
 		"$pkgdir"/usr/share/licenses/$pkgname/COPYING
 }
 
-sha512sums="2f53d380445272a2354f6914c39373e93d27fdcc5c712d7041fc798547280cebff53882f93d0467d86fc044b8a3a73a6b2fe04a9eaadae55b58bc9c617bab48a  duply_2.0.2.tgz"
+sha512sums="87254ef8e8499c4969f8f4d1806dc90352a4708d6b93d1be00273078e6b83636a5cc80c5faa76cf82cca040f392c11b5188ec2e3969fde26ffffeafd13346c60  duply_2.0.4.tgz"

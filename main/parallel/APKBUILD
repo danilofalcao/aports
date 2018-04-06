@@ -1,17 +1,18 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@alpinelinux.org>
 pkgname=parallel
-pkgver=20170422
+pkgver=20180322
 pkgrel=0
 pkgdesc="Shell tool for executing jobs in parallel"
 arch="noarch"
-url="http://www.gnu.org/software/parallel/"
-license="GPL3"
+url="http://www.gnu.org/software/parallel"
+license="GPL-3.0-or-later"
 depends="perl"
 subpackages="$pkgname-doc"
+options="!check"
 source="http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.bz2"
-
 builddir="$srcdir"/$pkgname-$pkgver
+
 build() {
 	cd "$builddir"
 	./configure \
@@ -20,14 +21,13 @@ build() {
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--mandir=/usr/share/man \
-		--localstatedir=/var \
-		|| return 1
-	make || return 1
+		--localstatedir=/var
+	make
 }
 
 package() {
-	cd "$srcdir"/$pkgname-$pkgver
-	make DESTDIR="$pkgdir" install || return 1
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="3785221751ef334db0c999819dd6a6cfae20400b1257467325e1533cbff3ea02a1008b61636bd8ec11b270a95c081c89f4be46d2d7a4fe8585e402f320e7c870  parallel-20170422.tar.bz2"
+sha512sums="62299fc3aca77c3d7b844b928d266209735b9f8012dd299ab5c142e4588bc0bf4e039e48200c0602b36719b3f70dc2442c89469939be71f3bcff887b2885f5dd  parallel-20180322.tar.bz2"

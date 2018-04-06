@@ -2,48 +2,58 @@
 # Maintainer: Matt Smith <mcs@darkregion.net>
 pkgname=py-sphinx
 _pkgname=${pkgname#py-}
-pkgver=1.6.3
+pkgver=1.7.2
 pkgrel=0
 pkgdesc="Python Documentation Generator"
 url="http://sphinx.pocoo.org/"
 arch="noarch"
 license="BSD"
 _pydepends="py-docutils py-jinja2 py-pygments py-six py-sphinx_rtd_theme
-	py-alabaster<0.8 py-babel py-snowballstemmer py-imagesize py-requests"
+	py-alabaster<0.8 py-babel py-snowballstemmer py-imagesize
+	py-requests py-sphinxcontrib-websupport"
 depends="py3-${pkgname#py-}"
 makedepends="python2-dev python3-dev py-setuptools"
+#checkdepends="pytest py-funcsigs py-pluggy"
+options="!check" # py-pluggy and some other packages needs to be moved to main first
 subpackages="py2-${pkgname#py-}:_py2 py3-${pkgname#py-}:_py3"
-source="$_pkgname-$pkgver.tar.gz::https://github.com/sphinx-doc/sphinx/archive/$pkgver.tar.gz"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/sphinx-doc/sphinx/archive/v$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
 
 prepare() {
-	default_prepare || return 1
+	default_prepare
 
 	# Soure files are modified during build with 2to3 tool, so we cannot
 	# build it for both Python versions in the same location.
 	local python; for python in python2 python3; do
-		cp -r "$builddir" "$builddir-$python" || return 1
+		cp -r "$builddir" "$builddir-$python"
 	done
 }
 
 build() {
 	local python; for python in python2 python3; do
 		cd "$builddir"-$python
-		$python setup.py build || return 1
+		$python setup.py build
 	done
 }
+
+#check() {
+#	local python; for python in python2 python3; do
+#		cd "$builddir"-$python
+#		make PYTHON=$python test
+#	done
+#}
 
 package() {
 	mkdir -p "$pkgdir"/usr/bin
 
 	local name; for name in apidoc autogen build quickstart; do
-		ln -s sphinx-$name-3 "$pkgdir"/usr/bin/sphinx-$name || return 1
+		ln -s sphinx-$name-3 "$pkgdir"/usr/bin/sphinx-$name
 	done
 }
 
 _py2() {
 	replaces="$pkgname"
-	depends="make ${_pydepends//py-/py2-}"
+	depends="make ${_pydepends//py-/py2-} py2-typing"
 	_py python2
 }
 
@@ -60,12 +70,12 @@ _py() {
 	install_if="$pkgname=$pkgver-r$pkgrel $python"
 
 	cd "$builddir"-$python
-	$python setup.py install --prefix=/usr --root="$subpkgdir" || return 1
+	$python setup.py install --prefix=/usr --root="$subpkgdir"
 
 	# Add version suffix to executable files.
 	local path; for path in "$subpkgdir"/usr/bin/*; do
-		mv "$path" "$path-$pyver" || return 1
+		mv "$path" "$path-$pyver"
 	done
 }
 
-sha512sums="52d299dda32080cbfa7ef461f7a65dcbb195869978c2950ec0fd4b902cd53b74abbbc3cccb97d4533f0232d30df593d669fb3140896c6640baba454cf15052fc  sphinx-1.6.3.tar.gz"
+sha512sums="77cacb48dea035567af5feb8356ce35b9476c09232533eae9ea9e74c98bef7a3ce5cb50cbb3ec468841ca6efc5f1533beac23763efec1b9605e7ae0b0f98bd13  sphinx-1.7.2.tar.gz"

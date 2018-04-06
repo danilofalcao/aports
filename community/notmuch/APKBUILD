@@ -1,25 +1,35 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
 # Contributor: Stefan Wagner <stw@bit-strickerei.de>
 # Maintainer: Stefan Wagner <stw@bit-strickerei.de>
 pkgname=notmuch
-pkgver=0.24.1
+pkgver=0.25.3
 pkgrel=0
 pkgdesc="E-Mail index, search and tagging"
 url="https://notmuchmail.org/"
 arch="all"
-license="GPL3"
-makedepends="gzip xapian-core-dev gmime-dev talloc-dev
-	py-sphinx py-requests bash-completion"
+license="GPL-3.0"
+makedepends="gzip xapian-core-dev gmime-dev talloc-dev py-sphinx
+	py-requests python2-dev python3-dev bash-completion"
+checkdepends="sed coreutils diffutils bash tar mdocml grep"
 subpackages="
+	py2-$pkgname:py2
+	py3-$pkgname:py3
 	$pkgname-dev
 	$pkgname-doc
+	$pkgname-libs
+	$pkgname-emacs:emacs
+	$pkgname-vim:vim:noarch
 	$pkgname-zsh-completion:zshcomp:noarch
 	$pkgname-bash-completion:bashcomp:noarch"
-source="https://notmuchmail.org/releases/$pkgname-$pkgver.tar.gz"
-
+source="https://notmuchmail.org/releases/$pkgname-$pkgver.tar.gz
+	fix-tests.patch
+	fix-tests-for-python3.patch"
 builddir="$srcdir/$pkgname-$pkgver"
+
 build() {
 	cd "$builddir"
-	./configure \
+
+	PYTHON=python3 ./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
 		--prefix=/usr \
@@ -27,14 +37,58 @@ build() {
 		--mandir=/usr/share/man \
 		--localstatedir=/var \
 		--bashcompletiondir=/usr/share/bash-completion/completions \
-		--zshcompletiondir=/usr/share/zsh/site-functions \
-		|| return 1
-	make PREFIX=/usr DESTDIR="$pkgdir" || return 1
+		--zshcompletiondir=/usr/share/zsh/site-functions
+	make PREFIX=/usr DESTDIR="$pkgdir"
+
+	cd "$builddir"/bindings/python
+	python2 setup.py build
+	python3 setup.py build
 }
 
 package() {
 	make PREFIX=/usr DESTDIR="$pkgdir" \
-		-C "$builddir" install || return 1
+		-C "$builddir" install
+}
+
+check() {
+	cd "$builddir"/test
+	make test-binaries
+
+	local test=
+	for test in T*.sh; do
+		name="$(basename "$test")"
+		case "${name%%.*}" in
+		# Requires dtach ↦ doesn't work on the builders
+		*emacs*|T355-smime|T350-crypto) continue ;;
+
+		# XXX: Doesn't pass on the builders for some reason
+		T140-excludes) continue ;;
+
+		# FIXME: These should pass but currently don't
+		T050-new|T150-tagging) continue ;;
+		esac
+
+		./${test}
+	done
+}
+
+vim() {
+	depends="vim notmuch"
+	pkgdesc="Vim plugins for $pkgname"
+
+	make -C "$builddir/vim" DESTDIR="$subpkgdir" \
+		prefix="/usr/share/vim/vimfiles" install
+}
+
+emacs() {
+	depends="emacs notmuch"
+	pkgdesc="Emacs plugins for $pkgname"
+
+	mkdir -p "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/emacs/ "$subpkgdir"/usr/share/emacs/
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/notmuch-emacs-mua "$subpkgdir"/usr/bin/
 }
 
 bashcomp() {
@@ -44,7 +98,7 @@ bashcomp() {
 
 	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
 	mv "$pkgdir"/usr/share/bash-completion/completions/$pkgname \
-		"$subpkgdir"/usr/share/bash-completion/completions/ || return 1
+		"$subpkgdir"/usr/share/bash-completion/completions/
 }
 
 zshcomp() {
@@ -54,7 +108,27 @@ zshcomp() {
 
 	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions/
 	mv "$pkgdir"/usr/share/zsh/site-functions/_${pkgname} \
-		"$subpkgdir"/usr/share/zsh/site-functions/ || return 1
+		"$subpkgdir"/usr/share/zsh/site-functions/
 }
 
-sha512sums="e2014380de68de3e1a3fd3058a441c6771a92bfffe07c0bd2b374802dd8b2539eddbbb91074738f58f48452a936f2f9427fadca825a165c61a27fe0c3e1fe7fc  notmuch-0.24.1.tar.gz"
+_py() {
+	local python="$1"
+	pkgdesc="$pkgdesc (for $python)"
+	depends="$depends $python"
+	install_if="$pkgname=$pkgver-r$pkgrel $python"
+
+	cd "$builddir"/bindings/python
+	$python setup.py install --prefix=/usr --root="$subpkgdir"
+}
+
+py2() {
+	_py python2
+}
+
+py3() {
+	_py python3
+}
+
+sha512sums="1c0fcfdeb7a7eddcd10a8175676679ef6985407732d5bcc15edd327d9985017696cef3287c0398c628a604ae3fbab5d222d71537e37265cf6a594b4914e4599a  notmuch-0.25.3.tar.gz
+430e8f02b194b0582dfd7c66a2791a0071824e1d215993a6daf89c8d2a1ee7f73a6202136b1d890fc8920a4dc309ae976da8a8b8fc8b90e489d3c04f1592876c  fix-tests.patch
+a7dd888c5d08835be75986e67afcbc95c7a65c187fab5b0eb969bb36e9bbbc2d647789f106f709a38906eed51e3684a3241678ace1fc8c4b5e1cdbdd06fb6bbb  fix-tests-for-python3.patch"

@@ -1,14 +1,14 @@
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=nmap
-pkgver=7.50
-pkgrel=0
+pkgver=7.70
+pkgrel=1
 pkgdesc="A network exploration tool and security/port scanner"
 url="http://nmap.org"
 arch="all"
 license="custom"
 depends=""
 makedepends="libpcap-dev libressl-dev lua-dev linux-headers"
-install=""
+options="!check" #FIXME: fails on armhf and aarch64
 subpackages="
 	$pkgname-doc
 	$pkgname-scripts::noarch
@@ -17,10 +17,15 @@ subpackages="
 	$pkgname-ncat"
 source="http://nmap.org/dist/$pkgname-$pkgver.tar.bz2
 	fortify-source.patch"
+builddir="$srcdir"/$pkgname-$pkgver
 
-_builddir="$srcdir"/$pkgname-$pkgver
+prepare() {
+	default_prepare
+	update_config_sub
+}
+
 build() {
-	cd "$_builddir"
+	cd "$builddir"
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
@@ -30,16 +35,20 @@ build() {
 		--infodir=/usr/share/info \
 		--without-zenmap \
 		--with-liblua=/usr/include \
-		--with-openssl=/usr/lib \
-		|| return 1
+		--with-openssl=/usr/lib
 
 	# fix LUA libs linking order
-	make "LUA_LIBS=../liblua/liblua.a -ldl -lm" || return 1
+	make "LUA_LIBS=../liblua/liblua.a -ldl -lm"
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
-	cd "$_builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
 	install -Dm644 COPYING ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
 }
 
@@ -49,7 +58,7 @@ scripts() {
 
 	mkdir -p "$subpkgdir"/usr/share/nmap/
 	mv "$pkgdir"/usr/share/nmap/scripts \
-		"$subpkgdir"/usr/share/nmap/ || return 1
+		"$subpkgdir"/usr/share/nmap/
 }
 
 nselibs() {
@@ -58,20 +67,20 @@ nselibs() {
 	mkdir -p "$subpkgdir"/usr/share/nmap/
 	mv "$pkgdir"/usr/share/nmap/nse_main.lua \
 		"$pkgdir"/usr/share/nmap/nselib \
-		"$subpkgdir"/usr/share/nmap/ || return 1
+		"$subpkgdir"/usr/share/nmap/
 }
 
 ncat() {
 	pkgdesc="$pkgdesc (ncat tool)"
 	mkdir -p "$subpkgdir"/usr/bin
-	mv "$pkgdir"/usr/bin/ncat "$subpkgdir"/usr/bin || return 1
+	mv "$pkgdir"/usr/bin/ncat "$subpkgdir"/usr/bin
 }
 
 nping() {
 	pkgdesc="$pkgdesc (nping tool)"
 	mkdir -p "$subpkgdir"/usr/bin
-	mv "$pkgdir"/usr/bin/nping "$subpkgdir"/usr/bin || return 1
+	mv "$pkgdir"/usr/bin/nping "$subpkgdir"/usr/bin
 }
 
-sha512sums="b74c5711f03bae363164cdb7e62923ab938c81c7bbcd080eaa2d1acc89f09eb0a7e0f5deb9628b81057c7a35ecd487a2d09dfe3b58b0db6c84cf0b39f526e5f2  nmap-7.50.tar.bz2
+sha512sums="084c148b022ff6550e269d976d0077f7932a10e2ef218236fe13aa3a70b4eb6506df03329868fc68cb3ce78e4360b200f5a7a491d3145028fed679ef1c9ecae5  nmap-7.70.tar.bz2
 2d1f6e290723ac643f456a0e1ac95c4c966106cf2ab743839d25c835bf0141dc2d6bfee19285c3518d4c5f553b0505dabe5a496b769ba47b7adb03e791f05b8d  fortify-source.patch"

@@ -2,15 +2,13 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=libre2
 _pkgname=re2
-pkgver=2017.07.01
+pkgver=2018.04.01
 _pkgver=${pkgver//./-}
 pkgrel=0
-pkgdesc="an efficient, principled regular expression library"
-url="https://code.google.com/p/re2/"
+pkgdesc="Efficient, principled regular expression library"
+url="https://github.com/google/re2"
 arch="all"
-license="custom"
-makedepends=""
-options="!check"
+license="BSD-3-Clause"
 subpackages="$pkgname-dev $pkgname-doc"
 source="https://github.com/google/$_pkgname/archive/$_pkgver.tar.gz"
 builddir="$srcdir"/$_pkgname-$_pkgver
@@ -20,6 +18,11 @@ build() {
 	make
 }
 
+check() {
+	cd "$builddir"
+	make test
+}
+
 package() {
 	cd "$builddir"
 	make DESTDIR="$pkgdir" prefix=/usr install
@@ -27,4 +30,4 @@ package() {
 		"$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 }
 
-sha512sums="b638a5adb27bcda792a4915922130ca7fed0df52fc5dba3e5258f0c744e2ff682e382e04ffdf77ddd49d6776100fd950dd6035bad89418053e08bcdd7bde65da  2017-07-01.tar.gz"
+sha512sums="862d9bcb574ea986b1497d6c079104a0cf27b418a6ec8c24047f0d43ede2c8f7f0bdc6a3ccddaeb746f0d821e3e7fd701f438d7fed101db969785c4b344e0462  2018-04-01.tar.gz"

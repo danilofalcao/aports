@@ -1,12 +1,12 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=py-libvirt
 _pkgname=libvirt-python
-pkgver=3.5.0
+pkgver=4.2.0
 pkgrel=0
 pkgdesc="The libvirt virtualization API python binding"
 url="http://libvirt.org"
 arch="all"
-license="LGPLv2+"
+license="LGPL-2.0-or-later"
 makedepends="python2-dev python3-dev libvirt-dev"
 subpackages="py3-${pkgname#py-}:_py3 py2-${pkgname#py-}:_py2"
 source="http://libvirt.org/sources/python/$_pkgname-$pkgver.tar.gz
@@ -48,5 +48,5 @@ _py3() {
 	_py python3
 }
 
-sha512sums="31e0bf7604fe3e422fbad2acdfae1a50050bb4b45ed1e9596040e1c08607a772d62d88c1636c1c18de082d913fb549481aeb5e48f76276cb6ac6534a71f8f7b6  libvirt-python-3.5.0.tar.gz
+sha512sums="4c06d7de470ff22ee5983598e66d26a3e850998311c8061952f9f6b5be0a7a0f437e2b214d3d66bf465acec9afb925dfb6dd0cd756ed78e818d19e15e7cfdf6a  libvirt-python-4.2.0.tar.gz
 8aa1d814f8388ebff0736ee138c780323381cd4cf39b4a4faed2e2a1fe5911facc34505a85b0977d8b4240b8ce2f4a6d0414790693c4f45ff7d9592e9d6a3ff8  musl-gnuc-prereq.patch"

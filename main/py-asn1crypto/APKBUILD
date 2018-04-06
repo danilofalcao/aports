@@ -2,7 +2,7 @@
 # Maintainer: André Klitzing <aklitzing@gmail.com>
 pkgname=py-asn1crypto
 _pkgname=asn1crypto
-pkgver=0.22.0
+pkgver=0.24.0
 pkgrel=0
 pkgdesc="Python ASN.1 library with a focus on performance and a pythonic API"
 url="https://github.com/wbond/asn1crypto"
@@ -15,8 +15,14 @@ builddir="$srcdir/$_pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
-	python2 setup.py build || return 1
-	python3 setup.py build || return 1
+	python2 setup.py build
+	python3 setup.py build
+}
+
+check() {
+	cd "$builddir"
+	python2 run.py tests
+	python3 run.py tests
 }
 
 package() {
@@ -42,4 +48,4 @@ _py3() {
 	_py python3
 }
 
-sha512sums="d7d88e81323d4e70a32723967aa7df912671c4039b26801846ccf3337ef3015528f9b0d23a25988b0d823291f069323e6985c8ef25f681cc1edb85d64d42d0e5  asn1crypto-0.22.0.tar.gz"
+sha512sums="426cc380903b4dd7aadd7b831e3a11ee3442c961a33b856d4aa8d9060e829f2e0ad905a60c4d6504569718fe2cee01d9be31628c89ef030bc34281e381c898e8  asn1crypto-0.24.0.tar.gz"

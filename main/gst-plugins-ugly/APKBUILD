@@ -1,32 +1,27 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=gst-plugins-ugly
-pkgver=1.12.1
-pkgrel=2
+pkgver=1.14.0
+pkgrel=0
 pkgdesc="GStreamer Multimedia Framework Ugly Plugins (gst-plugins-ugly)"
-url="http://gstreamer.freedesktop.org/"
+url="https://gstreamer.freedesktop.org/"
 arch="all"
-license="LGPL"
-depends=
+license="GPL-2.0-or-later LGPL-2.0-or-later"
 replaces="gst-plugins-ugly1"
 makedepends="
 	a52dec-dev
 	glib-dev
 	gst-plugins-base-dev
 	gstreamer-dev
-	lame-dev
 	libcdio-dev
 	libdvdread-dev
-	libid3tag-dev
 	libmpeg2-dev
 	liboil-dev
-	mpg123-dev
 	orc-dev
 	x264-dev
 	"
-source="http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-$pkgver.tar.xz"
+source="https://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-$pkgver.tar.xz"
 subpackages="$pkgname-lang"
-ldpath="/usr/lib/gstreamer-.0"
-builddir="$srcdir"/gst-plugins-ugly-$pkgver
+ldpath="/usr/lib/gstreamer-1.0"
 
 # secfixes:
 #   1.10.4-r0:
@@ -46,13 +41,11 @@ build() {
 		--enable-a52dec \
 		--enable-cdio \
 		--enable-dvdread \
-		--enable-lame \
 		--enable-mpeg2dec \
-		--enable-mpg123 \
+		--enable-x264 \
 		--disable-fatal-warnings \
 		--with-package-name="GStreamer Ugly Plugins (Alpine Linux)" \
-		--with-package-origin="http://alpinelinux.org/" \
-		|| return 1
+		--with-package-origin="http://alpinelinux.org/"
 	make
 }
 
@@ -63,11 +56,11 @@ check() {
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
 doc() {
 	default_doc
 	replaces="${pkgname}1-doc"
 }
-sha512sums="b8e8c095f9d0858b95972f5176df51e5f280357584c4591cc5420a372f4de261dc7cd6e380390f3dfd0f082c818bdaac39afc3d716568f8d28ca03c83ca92d5b  gst-plugins-ugly-1.12.1.tar.xz"
+sha512sums="f3a12318536c41fe77efb63ab3d2feba9e586ea3f0da9d4f48b1710236a5932b191fb1e14734be82f7c3855574036baafd3e48fa7ac37091f05a47c37103eefb  gst-plugins-ugly-1.14.0.tar.xz"

@@ -1,0 +1,31 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=meson
+pkgver=0.45.1
+pkgrel=0
+pkgdesc="Build system meant to be both extremely fast and as user friendly as possible"
+url="http://mesonbuild.com/"
+arch="noarch"
+license="Apache-2.0"
+depends="python3 ninja"
+makedepends="python3-dev"
+subpackages="$pkgname-doc"
+source="https://github.com/mesonbuild/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	python3 setup.py build
+}
+
+check() {
+	cd "$builddir"
+	python3 setup.py check
+}
+
+package() {
+	cd "$builddir"
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="50bcc299d69a3649a3aa3582322c548af44c2771d65e57c79eae9d67ccb256a17e534649ee5080f50f6f9d4e5d717a1b1a28b3ef4684468094b16bbed8864846  meson-0.45.1.tar.gz"

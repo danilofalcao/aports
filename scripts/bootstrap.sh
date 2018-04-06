@@ -42,7 +42,7 @@ This script creates a local cross-compiler, and uses it to
 cross-compile an Alpine Linux base system for new architecture.
 
 Steps for introducing new architecture include:
-- adding the compiler tripler and arch type to abuild
+- adding the compiler triplet and arch type to abuild
 - adding the arch type detection to apk-tools
 - adjusting build rules for packages that are arch aware:
   gcc, libressl, linux-headers
@@ -97,13 +97,14 @@ apk info --quiet --installed --root "$CBUILDROOT" libgcc libstdc++ musl-dev || \
 # ordered cross-build
 for PKG in fortify-headers linux-headers musl libc-dev pkgconf zlib \
 	   busybox busybox-initscripts binutils make \
-	   libressl libfetch apk-tools \
+	   libressl apk-tools file \
 	   gmp mpfr3 mpc1 isl cloog gcc \
 	   openrc alpine-conf alpine-baselayout alpine-keys alpine-base build-base \
 	   attr libcap patch sudo acl fakeroot tar \
-	   pax-utils abuild openssh \
-	   ncurses util-linux lvm2 popt xz cryptsetup kmod lddtree mkinitfs \
-	   community/go libffi testing/ghc \
+	   pax-utils lzip abuild openssh \
+	   ncurses libcap-ng util-linux lvm2 popt xz \
+	   json-c argon2 cryptsetup kmod lddtree mkinitfs \
+	   community/go libffi community/ghc \
 	   $KERNEL_PKG ; do
 
 	CHOST=$TARGET_ARCH BOOTSTRAP=bootimage APKBUILD=$(apkbuildname $PKG) abuild -r

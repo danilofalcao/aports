@@ -1,0 +1,55 @@
+# Contributor: Roland Kammerer <roland.kammerer@linbit.com>
+# Maintainer: Roland Kammerer <roland.kammerer@linbit.com>
+
+# when changing _ver we *must* bump _rel
+_name=drbd
+_ver=9.0.9
+_rel=1
+
+_flavor=${FLAVOR:-vanilla}
+_kpkg=linux-$_flavor
+_kver=4.14.32
+_krel=0
+_kabi="$_kver-$_krel-$_flavor"
+_kpkgver="$_kver-r$_krel"
+
+pkgname=$_name-$_flavor
+pkgver=$_kver
+pkgrel=$(( $_krel + $_rel ))
+
+pkgdesc="Network-based RAID 1 version 9"
+url="http://www.drbd.org"
+arch="all"
+license="GPL-2.0"
+depends="$_kpkg=$_kpkgver"
+makedepends="$_kpkg-dev=$_kpkgver bash"
+source="https://links.linbit.com/sources/$_name/${_ver%.*}/$_name-$_ver-$_rel.tar.gz"
+
+builddir=$srcdir/$_name-$_ver-$_rel
+
+prepare() {
+	default_prepare
+	# verify the kernel version
+	local _kapkbuild=../../main/linux-$_flavor/APKBUILD
+	if [ -f $_kapkbuild ]; then
+		(	. $_kapkbuild
+			pkgname=$_name-$_flavor
+			[ "$_kver" != "$pkgver" ] && die "please update _kver to $pkgver"
+			[ "$_krel" != "$pkgrel" ] && die "please update _krel to $pkgrel"
+			return 0
+		)
+	fi
+}
+
+build() {
+	cd "$builddir"
+	unset LDFLAGS
+	make KVER=$_kabi
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="64e98eb055c3007231faf00b3b16d47a339d5aa2301e328a86c943d8d31cb73802e7d187a94bf84947750f98442370d8eb366a4675472050a1c0c095868152d5  drbd-9.0.9-1.tar.gz"

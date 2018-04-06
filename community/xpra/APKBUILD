@@ -1,18 +1,18 @@
 # Contributor: Stuart Cardall <developer@it-offshore.co.uk>
 # Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
 pkgname=xpra
-pkgver=2.0.3
+pkgver=2.2.6
 pkgrel=0
-pkgdesc="Xpra is 'screen for X' & allows you to run X programs, usually on a remote host over SSH or encrypted tcp."
+pkgdesc="Xpra is 'screen for X' & allows you to run X programs, usually on a remote host over SSH or encrypted tcp"
 url="http://xpra.org"
-arch="all !s390x"
-license="GPLv2+"
-depends="py-gobject py-gtk py-imaging xf86-video-dummy xvfb setxkbmap xorg-server
-	py2-numpy py2-pillow py-gtkglext py2-lz4 py-rencode py-opencl py2-xxhash
-	py2-cryptography"
-makedepends="python2-dev cython-dev libx11-dev libxtst-dev libxcomposite-dev libxdamage-dev
-	libxrandr-dev py-gobject-dev py-gtk-dev libxkbfile-dev gtk+2.0-dev x264-dev x265-dev
-	libvpx-dev ffmpeg-dev cython linux-headers gstreamer-dev py2-yuicompressor"
+# !armhf: fails to build
+arch="all !s390x !armhf"
+license="GPL-2.0-or-later"
+depends="py-gobject py-gtk py-gtkglext py-imaging py-opencl py-rencode py2-cryptography
+	py2-lz4 py2-numpy py2-pillow py2-xxhash setxkbmap xf86-video-dummy xorg-server xvfb"
+makedepends="cython cython-dev ffmpeg-dev gstreamer-dev gtk+2.0-dev libvpx-dev libx11-dev
+	libxcomposite-dev libxdamage-dev libxkbfile-dev libxrandr-dev libxtst-dev linux-headers
+	py-gobject-dev py-gtk-dev py2-yuicompressor python2-dev x264-dev x265-dev"
 subpackages="$pkgname-doc $pkgname-tests::noarch $pkgname-webclient::noarch"
 options="!check"
 source="https://xpra.org/src/$pkgname-$pkgver.tar.xz"
@@ -24,17 +24,17 @@ build() {
 	# https://www.xpra.org/trac/ticket/1080
 	CFLAGS="$CFLAGS -fno-strict-aliasing"
 	python2 setup.py build \
-		--with-bundle_tests \
-		|| return 1
+		--with-bundle_tests
 }
 
 package() {
 	cd "$builddir"
 
-	python2 setup.py install --prefix=/usr --root="$pkgdir" || return 1
-	# fixes Error relocating /usr/lib/xorg/modules/drivers/dummy_drv.so: fbPictureInit: symbol not found
-	printf '\nSection "Module"\n  Load\t"fb"\nEndSection' >> $pkgdir/etc/xpra/xorg.conf
+	python2 setup.py install --prefix=/usr --root="$pkgdir"
+
+	# Fixes Error relocating /usr/lib/xorg/modules/drivers/dummy_drv.so: fbPictureInit: symbol not found
 	# https://bugs.alpinelinux.org/issues/5478
+	printf '\nSection "Module"\n  Load\t"fb"\nEndSection\n' >> "$pkgdir"/etc/xpra/xorg.conf
 }
 
 tests() {
@@ -53,4 +53,4 @@ webclient() {
 	cp -rf usr/share/xpra/www "$subpkgdir"/usr/share/xpra/
 }
 
-sha512sums="25d8c5956462bd286c96a70b8f8fa8e9e75cfa27ec65438d72c0f6846b6ba7e5b61c3079ed6c663153d4abab0dddff906d6c22b40f97b77cc81728441798891e  xpra-2.0.3.tar.xz"
+sha512sums="f47b7a8b08fc90bdf3cba91e4f7343785cdf6e24a0979f4564e9f6885b0f36c03ff5656e2d7ac5fd21895faca7b00e8839ebd66c82122a2c7cab2b40bd44e745  xpra-2.2.6.tar.xz"

@@ -2,11 +2,11 @@
 # Maintainer:
 pkgname=libdbi-drivers
 pkgver=0.9.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Provides the database-specific drivers for the libdbi framework"
 url="http://libdbi-drivers.sourceforge.net/"
 arch="all"
-license="LGPL2+"
+license="LGPL-2.0-or-later"
 depends=""
 depends_dev=""
 makedepends="libdbi-dev freetds-dev mysql-dev postgresql-dev sqlite-dev

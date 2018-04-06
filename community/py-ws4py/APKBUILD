@@ -2,7 +2,7 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=py-ws4py
 _pkgname=ws4py
-pkgver=0.4.2
+pkgver=0.5.1
 pkgrel=0
 pkgdesc="WebSocket client and server library for Python 2 and 3 as well as PyPy"
 url="https://github.com/Lawouach/WebSocket-for-Python"
@@ -44,4 +44,4 @@ _py3() {
 	_py python3
 }
 
-sha512sums="aab5ac088827bcd2b12bdbd853a4ce54455de8b8b8fb1c9d2b9737be5da3e571ef13f50a5a7f37ce9e9f97f39877bf3af292fa89a98841af8cc928b8bef636df  ws4py-0.4.2.tar.gz"
+sha512sums="e3202d7bc547a5447eaeeeabe2ff18bd884c89c02cf54e27d88ca9cd14bcd9f080f7ff7e02d36538200c096df0442809c171c99e37b16ff818866c45b40eeef9  ws4py-0.5.1.tar.gz"

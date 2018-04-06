@@ -1,7 +1,7 @@
 # Contributor: Ashley Sommer <ashleysommer@gmail.com>
 # Maintainer: Ashley Sommer <ashleysommer@gmail.com>
 pkgname=libfastjson
-pkgver=0.99.4
+pkgver=0.99.8
 pkgrel=0
 pkgdesc="A fork of the json-c library for rsyslog, optimized for liblognorm processing."
 url="http://www.rsyslog.com/"
@@ -40,6 +40,4 @@ package() {
 	make DESTDIR="$pkgdir" install || return 1
 }
 
-md5sums="5a24c9adcd0bf5307c972de5e9ea4ce9  libfastjson-0.99.4.tar.gz"
-sha256sums="03ef63dcc88417e71c19ce4436804159e3397e3a20d3529efef6a43c3bef5c8d  libfastjson-0.99.4.tar.gz"
-sha512sums="99498ab4a1fd2bcca1d175795a94e355da0d48a546f6dc032ae68e83d7f970240ee0942a192bad9c7b8cd134720e17b949659b45b174bd44214044afa2cf690a  libfastjson-0.99.4.tar.gz"
+sha512sums="bd68705ab41d360582bb08b1f29be5b16f55d18674f26066cdd36c66a52a571873e013e31dbb0d21ea73684709a63d0f831be9eb12d8c6e9d8eaf5ec71ce6f18  libfastjson-0.99.8.tar.gz"

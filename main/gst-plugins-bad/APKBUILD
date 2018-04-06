@@ -1,44 +1,50 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=gst-plugins-bad
-pkgver=1.12.1
-pkgrel=2
+pkgver=1.14.0
+pkgrel=0
 pkgdesc="GStreamer bad plugins"
-url="http://gstreamer.freedesktop.org/"
+url="https://gstreamer.freedesktop.org/"
 arch="all"
-license="LGPL GPL"
-depends=""
+license="GPL-2.0-or-later LGPL-2.0-or-later"
 replaces="gst-plugins-bad1"
-subpackages="$pkgname-lang $pkgname-dev $pkgname-doc"
+options="!check" # most fail because: XDG_RUNTIME_DIR not set in the env.
 makedepends="
 	alsa-lib-dev
+	bluez-dev
 	bzip2-dev
 	curl-dev
 	faac-dev
 	faad2-dev
 	flite-dev
 	glib-dev
+	glu-dev
 	gsm-dev
 	gst-plugins-base-dev
 	gstreamer-dev
-	jasper-dev
 	libdc1394-dev
 	libexif-dev
 	libmms-dev
 	libmodplug-dev
 	liboil-dev
-	libressl-dev
+	libressl-dev>=2.7.0
 	librsvg-dev
 	libvdpau-dev
 	libx11-dev
+	mesa-dev
 	neon-dev
 	orc-dev
-	sdl-dev
+	directfb-dev
 	spandsp-dev
-	xvidcore-dev
+	libwebp-dev
+	x265-dev
+	libass-dev
+	libsrtp-dev
+	orc-compiler
 	"
-source="http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-$pkgver.tar.xz"
-ldpath="/usr/lib/gstreamer-.0"
-builddir="$srcdir"/gst-plugins-bad-$pkgver
+subpackages="$pkgname-lang $pkgname-dev $pkgname-doc"
+source="https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-$pkgver.tar.xz
+	libressl270-dtsl_method.patch"
+ldpath="/usr/lib/gstreamer-1.0"
 
 build() {
 	cd "$builddir"
@@ -52,18 +58,23 @@ build() {
 		--enable-experimental \
 		--disable-fatal-warnings \
 		--with-package-name="GStreamer Bad Plugins (Alpine Linux)" \
-		--with-package-origin="http://alpinelinux.org/" \
-		|| return 1
-	make || return 1
+		--with-package-origin="http://alpinelinux.org/"
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
 doc() {
 	default_doc
 	replaces="${pkgname}1-doc"
 }
-sha512sums="20358b1ff3eb79c085d096776e6311ac07e070de44a213b79975efef63f0485fe978a659f4127c2973430759f4a5044c482dc0a98ef3263cb927e94f5de97f0a  gst-plugins-bad-1.12.1.tar.xz"
+sha512sums="3f64dc428e2c1890f05d2c718215ff4b78a8262255ea61e746b436dc9ce1d3e0671db9cf3640f9a7453434297cac3a134272de7785818dfc5a6011ce8584842f  gst-plugins-bad-1.14.0.tar.xz
+82106a8fa7ac01c63c3298c33a3b6177a4115f380d475634ea8ba4c67654f96275ab4b35eb4ea712a997165fefa7e9b65fd6b14ed3cea478c200d7e8d61423c4  libressl270-dtsl_method.patch"

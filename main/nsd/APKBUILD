@@ -3,15 +3,14 @@
 # Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=nsd
-pkgver=4.1.15
-pkgrel=2
-pkgdesc="NSD is an authoritative only, high performance, simple and open source name server."
-url="http://www.nlnetlabs.nl/projects/nsd/"
+pkgver=4.1.20
+pkgrel=1
+pkgdesc="Authoritative only, high performance and simple DNS server"
+url="https://www.nlnetlabs.nl/projects/nsd"
 arch="all"
-license="BSD"
+license="BSD-3-Clause"
 depends=""
-depends_dev=
-makedepends="$depends_dev libressl-dev libevent-dev"
+makedepends="libressl-dev libevent-dev"
 install="$pkgname.pre-install $pkgname.pre-upgrade"
 subpackages="$pkgname-doc $pkgname-dbg"
 pkgusers="nsd"
@@ -19,8 +18,8 @@ pkggroups="nsd"
 source="http://www.nlnetlabs.nl/downloads/$pkgname/$pkgname-$pkgver.tar.gz
 	nsd.initd
 	"
-
 builddir="$srcdir/$pkgname-$pkgver"
+
 build() {
 	cd "$builddir"
 	./configure \
@@ -30,25 +29,24 @@ build() {
 		--mandir=/usr/share/man \
 		--with-user=nsd \
 		--with-pidfile=/var/run/nsd/nsd.pid \
-		--with-xfrdir=/var/db/nsd \
-		|| return 1
-	make || return 1
+		--with-xfrdir=/var/db/nsd
+	make
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 
 	install -m755 -D "$srcdir"/$pkgname.initd \
-		"$pkgdir"/etc/init.d/$pkgname || return 1
+		"$pkgdir"/etc/init.d/$pkgname
 
 	install -d "$pkgdir"/usr/share/doc/$pkgname
 	cp -a "$builddir"/doc/* "$builddir"/contrib \
 		"$pkgdir"/usr/share/doc/$pkgname/
 
-	chown nsd.nsd "$pkgdir"/var/db/nsd || return 1
-	rm -fr "$pkgdir"/var/run || return 1
+	chown nsd.nsd "$pkgdir"/var/db/nsd
+	rm -fr "$pkgdir"/var/run
 }
 
-sha512sums="1011e4805d43931dd1a7fed230dadd9eb9bdf7a6728cb5bbde2def462d3bdc2ed79529ef0c60a6530e6fb78ae88a03a50d8b75b27d9130966ca20a62d8a6615e  nsd-4.1.15.tar.gz
+sha512sums="4e646303d9da920a9ad567ea3e04a06d8b66bc0d84117908ae69126c131321d660548f32e7bb54e248dae4f48d5152c0a204bf8bf9262ac4394371c05305b21e  nsd-4.1.20.tar.gz
 0425f606bf102175adab6d198aeb692872576f9c0bfce11b9d9e4145595b4902e5ef3fe2c3ae5d832308f43282618494b8dd27eb76658e79df85cc7798008722  nsd.initd"

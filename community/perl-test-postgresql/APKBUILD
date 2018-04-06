@@ -3,18 +3,19 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=perl-test-postgresql
 _pkgreal=Test-PostgreSQL
-pkgver=1.23
+pkgver=1.25
 pkgrel=0
 pkgdesc="PostgreSQL runner for tests"
 url="http://search.cpan.org/dist/Test-PostgreSQL/"
 arch="noarch"
-license="Artistic-2"
+license="Artistic-2.0"
 cpandepends="perl-class-accessor-lite"
 cpanmakedepends="perl-test-sharedfork perl-dbd-pg perl-dbi
 	perl-test-pod perl-moo perl-type-tiny perl-function-parameters
 	perl-file-which perl-tie-hash-method"
 depends="$cpandepends"
-makedepends="perl-dev $cpanmakedepends"
+makedepends="perl-dev $cpanmakedepends perl-module-install"
+checkdepends="perl-try-tiny"
 subpackages="$pkgname-doc"
 source="http://search.cpan.org/CPAN/authors/id/T/TJ/TJC/$_pkgreal-$pkgver.tar.gz"
 builddir="$srcdir/$_pkgreal-$pkgver"
@@ -42,4 +43,4 @@ package() {
 	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
 }
 
-sha512sums="a835d55d7ddc66255f09ae15fd66d3f40b70fa7a4da7f70ffaa8400639c893e942dbbc427086441e15859fc18736d121ab03cc2d2043d48ae5123530e1a31fb7  Test-PostgreSQL-1.23.tar.gz"
+sha512sums="220db567cf53b4128976a7055621bbba548a77b619d87bdf0b73d12adbc47611274a9323897800e8d4524d39522e36f46d4ec34036b742d9f7717a7c80748533  Test-PostgreSQL-1.25.tar.gz"

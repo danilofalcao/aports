@@ -1,18 +1,17 @@
 # Maintainer: Thomas Boerger <thomas@webhippie.de>
 pkgname=sassc
-pkgver=3.4.2
+pkgver=3.5.0
 pkgrel=0
 pkgdesc="Libsass command line driver"
 url="https://github.com/sass/sassc"
 arch="all"
 license="MIT"
-depends=""
 makedepends="libsass-dev autoconf automake libtool"
 source="$pkgname-$pkgver.tar.gz::https://github.com/sass/$pkgname/archive/$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgver"
 
 prepare() {
-	default_prepare || return 1
+	default_prepare
 
 	cd "$builddir"
 	autoreconf -vif
@@ -24,14 +23,18 @@ build() {
 		--build=$CBUILD \
 		--host=$CHOST \
 		--prefix=/usr \
-		--disable-static \
-		|| return 1
-	make || return 1
+		--disable-static
+	make
+}
+
+check() {
+	cd "$builddir"
+	./sassc --help > /dev/null
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="5be67e2d2b36f17df8d448867b545b1220ee25ad3fff45d5c55e1d8fec9e85653fff30f8c22c5ffa994b6920e237959b1ff5cfbc44dae03f7dc2c0e807114215  sassc-3.4.2.tar.gz"
+sha512sums="9c94056f66688016dd8eaae9cc791be4b397406b89f1289946c4481b5e1904486878d22fd65e695ed89f9b41a9f902932eb4074e7b0923ce3d4823ea3140334f  sassc-3.5.0.tar.gz"

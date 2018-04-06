@@ -3,8 +3,8 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=perl-text-diff
 _pkgreal=Text-Diff
-pkgver=1.44
-pkgrel=0
+pkgver=1.45
+pkgrel=1
 pkgdesc="Perform diffs on files and record sets"
 url="http://search.cpan.org/dist/Text-Diff/"
 arch="noarch"
@@ -16,24 +16,27 @@ makedepends="perl-dev $cpanmakedepends"
 subpackages="$pkgname-doc"
 source="http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/$_pkgreal-$pkgver.tar.gz"
 
-_builddir="$srcdir/$_pkgreal-$pkgver"
+builddir="$srcdir/$_pkgreal-$pkgver"
 
 prepare() {
-	cd "$_builddir"
+	cd "$builddir"
 	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
 }
 
 build() {
-	cd "$_builddir"
-	make && make test
+	cd "$builddir"
+	make
+}
+
+check() {
+        cd "$builddir"
+        make test
 }
 
 package() {
-	cd "$_builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
 	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
 }
 
-md5sums="1f0bcd24b64b50a29ad1cf997c2247e9  Text-Diff-1.44.tar.gz"
-sha256sums="57f7a0bed7d085d34a3ffab3a68140d7b816737c87b831086b4c0945bf483b10  Text-Diff-1.44.tar.gz"
-sha512sums="6174135a07c880cb92577ad07107a4d4606f91a2602f65d9c0fd032d11de86d91367feb6e2da71f9b9293331460ab42439623c5c03e2ee4807846709c3e964aa  Text-Diff-1.44.tar.gz"
+sha512sums="569370707bf30d60d12df6389594bcdba050805005916ac3a485c2226e528891b0af9ecfcc13d20e4f377d2c36a7ff67e51de5ca409c647aa8a36b7a87eab367  Text-Diff-1.45.tar.gz"

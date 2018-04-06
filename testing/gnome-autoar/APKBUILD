@@ -4,14 +4,14 @@ pkgver=0.2.2
 pkgrel=0
 pkgdesc="GNOME archive extraction library"
 url="http://www.gnome.org/"
-arch="all"
+arch="all !s390x"
 license="GPL"
 depends=""
 depends_dev="gnome-desktop-dev libarchive-dev"
 makedepends="$depends_dev vala"
 install=""
 subpackages="$pkgname-dev $pkgname-doc"
-source="http://ftp.gnome.org/pub/gnome/sources/gnome-autoar/${pkgver%.*}/gnome-autoar-$pkgver.tar.xz"
+source="https://download.gnome.org/sources/gnome-autoar/${pkgver%.*}/gnome-autoar-$pkgver.tar.xz"
 builddir="$srcdir/gnome-autoar-$pkgver"
 
 build() {

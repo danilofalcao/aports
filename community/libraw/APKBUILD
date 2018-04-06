@@ -1,0 +1,39 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libraw
+pkgver=0.18.8
+pkgrel=0
+pkgdesc="Library for reading RAW files obtained from digital photo cameras"
+url="https://www.libraw.org/"
+arch="all"
+license="CDDL LGPL custom"
+depends=""
+makedepends=""
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://www.libraw.org/data/LibRaw-$pkgver.tar.gz"
+builddir="$srcdir"/LibRaw-$pkgver
+
+# secfixes:
+#   0.18.6-r0:
+#     - CVE-2017-16910
+#   0.18.5-r0:
+#     - CVE-2017-13735
+#     - CVE-2017-14265
+
+build() {
+	cd "$builddir"
+	#export CXXFLAGS="$CXXFLAGS -std=gnu++98"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	#make lib/libraw.a lib/libraw_r.a
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+
+}
+
+sha512sums="48871a5e43c89a17962fae426a962d11a6ce40cb8e7d8abc90e98c899dc42b7e1711398c075901ddbc710fe7e916ba6d507bee7e18975779caa8f5d512b1d580  LibRaw-0.18.8.tar.gz"

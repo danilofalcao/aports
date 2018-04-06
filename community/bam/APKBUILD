@@ -5,16 +5,16 @@ pkgver=0.5.1
 pkgrel=1
 pkgdesc="Fast and flexible build system using Lua"
 arch="all !s390x" #luajit unavail on excluded arches
-url="http://github.com/matricks/bam"
+url="https://github.com/matricks/bam"
 makedepends="lua5.3-dev luajit-dev"
 license='ZLIB'
-option="!check"
+options="!check"
 source="$pkgname-$pkgver.tar.gz::https://github.com/matricks/bam/archive/v$pkgver.tar.gz"
 builddir="$srcdir"/$pkgname-$pkgver
 
 build() {
 	cd "$builddir"
-	sh make_unix.sh || return 1
+	sh make_unix.sh
 }
 
 package() {

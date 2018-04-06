@@ -1,7 +1,7 @@
 # Contributor: Danilo Godec <danilo.godec@agenda.si>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=joe
-pkgver=4.4
+pkgver=4.6
 pkgrel=0
 pkgdesc="Full featured terminal-based screen editor"
 url="http://joe-editor.sourceforge.net/"
@@ -20,9 +20,13 @@ build() {
 		--build=$CBUILD \
 		--host=$CHOST \
 		--prefix=/usr \
-		--sysconfdir=/etc \
-		|| return 1
-	make || return 1
+		--sysconfdir=/etc
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
 }
 
 package() {
@@ -31,6 +35,4 @@ package() {
 	install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
 }
 
-md5sums="59e63debe60b456a6ee5c0c27a756a47  joe-4.4.tar.gz"
-sha256sums="a5704828bbca29acb9e200414fef522c66cdf9ce28150f402d6767da43460979  joe-4.4.tar.gz"
-sha512sums="ef31443dda30569c5193cd1907e06f1caba349f746dedf3611b5527080e49a4026001d3d06629f3c9c712ae9265866efbdbba6f51d110c0e6ee95f39f0e3059d  joe-4.4.tar.gz"
+sha512sums="3dd64a994fb3d352a12bf027ef16d57d14ac2577fd63fb6b6e25cae46052befaa7c15dc029bff2f8c3275df90f0343bd46313601055d97277ea4540e109fbe82  joe-4.6.tar.gz"

@@ -1,0 +1,78 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ocaml-migrate-parsetree
+pkgver=1.0.9
+pkgrel=0
+pkgdesc="Convert OCaml parsetrees between different major versions"
+url="https://github.com/ocaml-ppx/ocaml-migrate-parsetree"
+arch="all !x86 !armhf !s390x"  # limited by ocaml
+license="LGPL-2.1-only-WITH-linking-exception"
+depends="ocaml-result ocaml-runtime"
+makedepends="dune ocaml ocaml-compiler-libs ocaml-findlib ocaml-result-dev
+	ocaml-ocamlbuild-dev opam"
+options="textrels"  # ppc64le (?!)
+subpackages="$pkgname-dev $pkgname-ocamlbuild"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ocaml-ppx/$pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	jbuilder build @install
+}
+
+check() {
+	cd "$builddir"
+	jbuilder runtest
+}
+
+package() {
+	cd "$builddir"
+
+	mkdir -p "$pkgdir"/usr/lib/ocaml
+	jbuilder install \
+		--destdir="$pkgdir/usr" \
+		--libdir="$pkgdir/usr/lib/ocaml"
+
+	cd "$pkgdir"
+
+	find usr/lib/ocaml -name '*.cmxs' -exec chmod 0755 {} \;
+
+	# Remove annotation files, sources and some generated code (?).
+	find usr/lib/ocaml \
+		-name '*.cmt' -delete \
+		-o -name '*.cmti' -delete \
+		-o -name '*.ml' -delete \
+		-o -name '*.ml-gen' -delete
+
+	# There's just a readme, changelog etc.
+	rm -Rf usr/doc
+}
+
+ocamlbuild() {
+	pkgdesc="$pkgdesc (ocamlbuild plugin)"
+	depends="$pkgname=$pkgver-r$pkgrel ocaml-ocamlbuild"
+
+	mkdir -p "$subpkgdir"/usr/lib/ocaml
+	mv "$pkgdir"/usr/lib/ocaml/$pkgname-ocamlbuild "$subpkgdir"/usr/lib/ocaml/
+}
+
+dev() {
+	default_dev
+
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-ocamlbuild=$pkgver-r$pkgrel"
+	local sitelib="usr/lib/ocaml/$pkgname"
+
+	cd "$pkgdir"
+
+	local path; for path in $(find $sitelib*/ \
+		-name '*.cmx' \
+		-o -name '*.cmxa' \
+		-o -name '*.mli')
+	do
+		mkdir -p "${path%/*}"
+		mv "$path" "$subpkgdir"/${path%/*}/
+		rmdir "$path" 2>/dev/null || true
+	done
+}
+
+sha512sums="4c0591803ec11e9e4bf6c3368c8f83b532449bacc7cdcbbc466504504c7dce8a8a796bb55e46bf63ce21ee35dad15855c44931c0bacef9e79908bce9a1a49f4f  ocaml-migrate-parsetree-1.0.9.tar.gz"

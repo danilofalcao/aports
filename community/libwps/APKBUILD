@@ -1,12 +1,12 @@
 # Contributor: Timo Teräs <timo.teras@iki.fi>
 # Maintainer: Timo Teräs <timo.teras@iki.fi>
 pkgname=libwps
-pkgver=0.4.6
+pkgver=0.4.8
 pkgrel=0
 pkgdesc="Import filter and tools for Microsoft Works files"
-url="http://sourceforge.net/projects/libwps/"
+url="https://sourceforge.net/projects/libwps/"
 arch="all"
-license="MPL2"
+license="MPL-2.0"
 depends=""
 depends_dev="librevenge-dev"
 makedepends="$depends_dev doxygen"
@@ -25,14 +25,13 @@ build() {
 		--sysconfdir=/etc \
 		--mandir=/usr/share/man \
 		--infodir=/usr/share/info \
-		--localstatedir=/var \
-		|| return 1
-	make || return 1
+		--localstatedir=/var
+	make
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
 tools() {
@@ -40,4 +39,4 @@ tools() {
 	mv "$pkgdir"/usr/bin "$subpkgdir"/usr
 }
 
-sha512sums="6a1af6ddbc5e65f898547ece3491991047f77d91e27e60ca1ebce9b72479a8f09d6b0558f3bdab49aff2a2e9cf0dff4361a75688751b5c99741311e4a462a7b2  libwps-0.4.6.tar.bz2"
+sha512sums="88def179f7251bd09fe8ffd617e36c049994977fffd3228e98bc09da0037fdac25cd70fa8316eecc6bd25321eee774855d63bdb598df341c7fb7ebc525d27731  libwps-0.4.8.tar.bz2"

@@ -1,7 +1,7 @@
 # Contributor: Francesco Colista <fcolista@alpinelinux.org>
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=guake
-pkgver=0.8.9
+pkgver=0.8.11
 pkgrel=0
 pkgdesc="Drop-down terminal for GNOME"
 url="http://guake-project.org"
@@ -38,4 +38,4 @@ package() {
 	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="fecf481fe5940e64b51329e0fdfacfc26083755bc4fbc8358b92fd5c78c5d2ce0bdc65a2af2e9b0679c04d61c4be6cd202179a0c45965c4a71ee82246f53c02c  guake-0.8.9.tar.gz"
+sha512sums="c11e3b1294e26eed12a42db51dab4b1fd8f41e2436e9203748df57a46694182e69b112a2ef13b63a0be50a54ed5bc65ed1092737a123c9e43910154fecc94687  guake-0.8.11.tar.gz"

@@ -2,12 +2,12 @@
 # Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
 pkgname=py-phonenumbers
 _pkgname=phonenumbers
-pkgver=8.6.0
+pkgver=8.9.3
 pkgrel=0
 pkgdesc="International phone number library for Python"
 url="https://github.com/daviddrysdale/python-phonenumbers"
 arch="noarch"
-license="ASL 2.0"
+license="Apache-2.0"
 makedepends="python2-dev python3-dev py-setuptools"
 subpackages="py2-${pkgname#py-}:_py2 py3-${pkgname#py-}:_py3"
 source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
@@ -42,4 +42,4 @@ _py() {
 	$python setup.py install --prefix=/usr --root="$subpkgdir"
 }
 
-sha512sums="25a0b6d28be1c3059e592183374020e2388d1db3eec85854d80f48fdf3aebdc986e171e5305189f70a0ca0ad3f6ec27da0621fdda9c3a005f8088ab70ae9bbf5  phonenumbers-8.6.0.tar.gz"
+sha512sums="744047c027529884489416ef4c49fdbf43c47441388687b07dbd7b45108b041c5d10ab7c7f99f444c31adc6da92b15becfce0e408ebc80940b17696e5a1b6adc  phonenumbers-8.9.3.tar.gz"

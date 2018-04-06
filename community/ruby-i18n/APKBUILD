@@ -1,0 +1,39 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ruby-i18n
+_gemname=${pkgname#ruby-}
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="New wave Internationalization support for Ruby"
+url="https://github.com/svenfuchs/i18n"
+arch="noarch"
+license="MIT"
+depends="ruby ruby-concurrent-ruby"
+options="!check"  # tests require additional deps that we don't have yet
+source="$pkgname-$pkgver.tar.gz::https://github.com/svenfuchs/$_gemname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_gemname-$pkgver"
+
+build() {
+	cd "$builddir"
+	gem build $_gemname.gemspec
+}
+
+package() {
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
+
+	cd "$builddir"
+	gem install --local \
+		--install-dir "$gemdir" \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		$_gemname
+
+	# Remove unnecessary files.
+	cd "$gemdir"
+	rm -r cache/ build_info/ doc/
+	cd gems/$_gemname-$pkgver
+	rm -r gemfiles/ test/ *.md *LICENSE*
+}
+
+sha512sums="c00fc7a28886e7a3fad5432b0d06975ef42864fa8083d8f31bb111b93e27af07554c9dbe3288d5af648ef6a2d99e8ccadd27bf2e5a94ac09d6e50ec4c1a35e69  ruby-i18n-1.0.0.tar.gz"

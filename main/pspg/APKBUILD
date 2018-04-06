@@ -1,0 +1,35 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=pspg
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="A unix pager optimized for psql"
+url="https://github.com/okbob/pspg"
+arch="all"
+license="BSD-2-Clause"
+makedepends="ncurses-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/okbob/$pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	cd "$builddir"
+	./pspg -V
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="33879c4cc344300b697715b4054b8ca5a752608c67e2145a7106ab9f0a9da2088e35da7156bf63f395945fce5ea853bd7f0093ca0f6bf173e3dcdace64325e0a  pspg-1.0.0.tar.gz"

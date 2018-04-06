@@ -1,22 +1,19 @@
 # Contributor: William Pitcock <nenolod@dereferenced.org>
 # Maintainer: William Pitcock <nenolod@dereferenced.org>
 pkgname=rpm
-pkgver=4.13.0
-pkgrel=1
-pkgdesc="The RPM package manager"
-url="http://www.rpm.org/"
+pkgver=4.13.1
+pkgrel=0
+pkgdesc="Redhat Package Management utilities (RPM)"
+url="http://www.rpm.org"
 arch="all"
-license="GPL2 LGPL2+"
-depends=""
-depends_dev="nspr-dev nss-dev db-dev lua-dev zlib-dev bzip2-dev xz-dev
-		libelf-dev file-dev popt-dev libcap-dev acl-dev libarchive-dev
-		binutils-dev"
-makedepends="$depends_dev graphviz gettext-dev python2-dev"
-install=""
+license="GPL-2.0-or-later LGPL-2.0-or-later"
+depends_dev="acl-dev binutils-dev bzip2-dev db-dev file-dev libarchive-dev
+	libcap-dev libelf-dev lua-dev nspr-dev nss-dev popt-dev xz-dev zlib-dev"
+makedepends="$depends_dev gettext-dev graphviz python2-dev"
 subpackages="$pkgname-dev $pkgname-doc $pkgname-lang py-rpm:py_rpm"
-source="http://ftp.rpm.org/releases/rpm-4.13.x/$pkgname-$pkgver.tar.bz2"
+source="http://ftp.rpm.org/releases/$pkgname-${pkgver%.*}.x/$pkgname-$pkgver.tar.bz2"
 
-builddir="$srcdir"/rpm-$pkgver
+builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
@@ -30,21 +27,18 @@ build() {
 		--localstatedir=/var \
 		--with-external-db \
 		--with-cap --with-acl \
-		--enable-python \
-		|| return 1
-	make || return 1
+		--enable-python
+	make
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
 py_rpm() {
 	mkdir -p "$subpkgdir"/usr/lib
-	mv "$pkgdir"/usr/lib/python* "$subpkgdir"/usr/lib || return 1
+	mv "$pkgdir"/usr/lib/python* "$subpkgdir"/usr/lib
 }
 
-md5sums="f64e70c7548911da51a11651a789e30e  rpm-4.13.0.tar.bz2"
-sha256sums="221166b61584721a8ca979d7d8576078a5dadaf09a44208f69cc1b353240ba1b  rpm-4.13.0.tar.bz2"
-sha512sums="d13d9170d5aba93698acfaa88a8ef4cddc9dc9d57aff88fa6947b23efcb11b51d4953f8ed2804b2b052fc6c7d9a95d2f5da599b9c17490c643bf8eff7b68f6e9  rpm-4.13.0.tar.bz2"
+sha512sums="3aa3fc6ec0c2199058708f24b42672db831a96c89981bca1669b2e39c2427f0afb7ec36075e47aebecf4ff3627434f4ca47ba617b6f552c85e7bfde5c6f5c647  rpm-4.13.1.tar.bz2"

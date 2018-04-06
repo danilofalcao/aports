@@ -3,13 +3,13 @@
 
 _flavor=${FLAVOR:-hardened}
 _kpkg=linux-$_flavor
-_kver=4.9.37
+_kver=4.9.73
 _kpkgrel=0
 
 # when changing _ver we *must* bump _mypkgrel
 # we must also match up _toolsrel with wireguard-tools
-_ver=0.0.20170629
-_mypkgrel=0
+_ver=0.0.20180304
+_mypkgrel=2
 _toolsrel=0
 _name=wireguard
 
@@ -31,8 +31,8 @@ pkgver=$_kver
 pkgrel=$(($_kpkgrel + $_mypkgrel))
 pkgdesc="Next generation secure network tunnel: kernel modules for $_flavor"
 arch='x86 x86_64 armhf'
-url='https://www.wireguard.io'
-license="GPLv2"
+url='https://www.wireguard.com'
+license="GPL-2.0"
 depends="linux-${_flavor}=${_kpkgver}"
 makedepends="linux-${_flavor}-dev=$_kpkgver libmnl-dev"
 install_if="wireguard-tools=$_toolsver linux-hardened=$_kpkgver"
@@ -46,8 +46,7 @@ build() {
 	# only building module: see wireguard-tools for userspace
 	make -C src/ \
 		KERNELDIR=/lib/modules/${_abi_release}/build \
-		module \
-		|| return 1
+		module
 }
 
 package() {
@@ -60,4 +59,4 @@ package() {
 	done
 }
 
-sha512sums="61ad1fc092aada471a847df2170964a8c963c4eb4e43425c20430fc0619fdf55ea56ba8a7839c5fddbbc323af089378da2d540a1ba0f8009d5cb7953da543147  WireGuard-0.0.20170629.tar.xz"
+sha512sums="dc7ad4c366625bc614f95abe163459804fa3b6a4dd9e1c7eee1571d3dab5a5bc88dbdc6cc79b9ec48f471ba71da54050f1bce8874ed130f15234a8353d276e50  WireGuard-0.0.20180304.tar.xz"

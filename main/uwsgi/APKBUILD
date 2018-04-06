@@ -3,12 +3,12 @@
 # Contributor: Jakub Jirutka <jakub@jirutka.cz>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=uwsgi
-pkgver=2.0.15
-pkgrel=0
+pkgver=2.0.17
+pkgrel=1
 pkgdesc="uWSGI application container server"
 url="http://projects.unbit.it/uwsgi/"
 arch="all"
-license="GPL2"
+license="GPL-2.0"
 depends="mailcap"
 install="uwsgi.pre-install"
 pkgusers="uwsgi"
@@ -23,7 +23,7 @@ makedepends="
 	linux-pam-dev
 	libxml2-dev
 	libxslt-dev
-	lua5.2-dev
+	lua5.3-dev
 	paxmark
 	pcre-dev
 	postgresql-dev
@@ -40,7 +40,12 @@ source="http://projects.unbit.it/downloads/uwsgi-${pkgver}.tar.gz
 	alpine.buildconf
 	musl-fix-python.patch
 	"
+options="!check"
 builddir="$srcdir/$pkgname-$pkgver"
+
+# secfixes:
+#   2.0.16-r0:
+#     - CVE-2018-6758
 
 # Plugins for Python 2 or without compile dependency on Python.
 # You may specify a custom name for so lib and subpackage after a colon.
@@ -133,7 +138,7 @@ _desc_python3="uWSGI plugin for Python 3"
 
 
 prepare() {
-	default_prepare || return 1
+	default_prepare
 	cp "$srcdir"/alpine.buildconf buildconf/alpine.ini
 }
 
@@ -142,16 +147,16 @@ build() {
 
 	msg "Building core"
 	# ccache seems to trigger some weird bug on musl
-	CC="gcc" python2 uwsgiconfig.py --build alpine || return 1
+	CC="gcc" python2 uwsgiconfig.py --build alpine
 
-	export UWSGICONFIG_LUAPC="lua5.2"
+	export UWSGICONFIG_LUAPC="lua5.3"
 
 	local item
 	for item in $_plugins; do
-		_build python "$item" || return 1
+		_build python "$item"
 	done
 	for item in $_plugins3; do
-		_build python3 "$item" || return 1
+		_build python3 "$item"
 	done
 }
 
@@ -167,14 +172,10 @@ _build() {
 package() {
 	cd "$builddir"
 
-	install -m 755 -D uwsgi \
-		"$pkgdir"/usr/sbin/uwsgi || return 1
-	install -m 644 -D "$srcdir"/readme.emperor \
-		"$pkgdir"/etc/uwsgi/conf.d/readme.emperor || return 1
-	install -m 644 -D "$srcdir"/uwsgi.ini \
-		"$pkgdir"/etc/uwsgi/uwsgi.ini || return 1
-	install -m 755 -D "$srcdir"/uwsgi.initd \
-		"$pkgdir"/etc/init.d/uwsgi || return 1
+	install -m 755 -D uwsgi "$pkgdir"/usr/sbin/uwsgi
+	install -m 644 -D "$srcdir"/readme.emperor "$pkgdir"/etc/uwsgi/conf.d/readme.emperor
+	install -m 644 -D "$srcdir"/uwsgi.ini "$pkgdir"/etc/uwsgi/uwsgi.ini
+	install -m 755 -D "$srcdir"/uwsgi.initd "$pkgdir"/etc/init.d/uwsgi
 
 	install -m 775 -d -o root -g uwsgi "$pkgdir"/var/log/uwsgi
 
@@ -203,10 +204,10 @@ _plugin() {
 	done
 
 	install -m 755 -D ${name}_plugin.so \
-		"$subpkgdir"/usr/lib/uwsgi/${name}_plugin.so || return 1
+		"$subpkgdir"/usr/lib/uwsgi/${name}_plugin.so
 }
 
-sha512sums="cb3ce7dc9eb9806151b04b04dc80ac7204cb4ddadf295eea98d5ebbf3a8c02f4b0bfb9a0490997c5edf427e39d3073a2d5b4fe7bd8ec458b30c0aab8e1da9bef  uwsgi-2.0.15.tar.gz
+sha512sums="639427fbb89a1c2610c1cafb6ff009398a3c0a8e27c3de3f00829428271ba97b64b1253368dd6150912cf44441052be2a63cbe81613bbe964be27ee2e570d2b2  uwsgi-2.0.17.tar.gz
 63137d45437e00deb970d66e2abddf7f235636b748f6cf545f54ff5557066c2a71db5c4a3bab2edceb4e65d3d7fac887f1f4c0e77658127e02b64d3026780b4c  uwsgi.initd
 370202e143d0e041a2e36905346080d3ca592c9a74705a8c4e142a1307d22b921c10e673d683ca284ea27d184474ed86edd7723a6e590d35a562ad7cf6afa529  uwsgi.ini
 2798c9d2e49e29292ffe6a5a29b866301c78d5f322fc5d07dfa9569efdaa5220237a5f6744652fbdd957be29311ddaff190541333f042cbf0e907dfa98ce3e2a  readme.emperor

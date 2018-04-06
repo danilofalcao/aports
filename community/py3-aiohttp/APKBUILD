@@ -2,26 +2,27 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=py3-aiohttp
 _pkgname=aiohttp
-pkgver=2.2.3
+pkgver=3.1.1
 pkgrel=0
 pkgdesc="HTTP client/server for asyncio"
-url="http://pypi.python.org/pypi/aiohttp"
+url="https://pypi.python.org/pypi/aiohttp"
 arch="all"
-license="ASL 2.0"
-depends="python3 py3-async-timeout py3-chardet py3-multidict py3-yarl"
-makedepends="python3-dev"
+license="Apache-2.0"
+depends="python3 py3-async-timeout py3-chardet py3-multidict py3-yarl 
+	py3-idna-ssl py3-attrs"
+makedepends="python3-dev py3-setuptools"
 subpackages="$pkgname-dev"
 source="$pkgname-$pkgver.tar.gz::https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
 builddir="$srcdir/$_pkgname-$pkgver"
 
-check() {
-	cd "$builddir"
-	python3 setup.py check
-}
-
 build() {
 	cd "$builddir"
 	python3 setup.py build
+}
+
+check() {
+	cd "$builddir"
+	python3 setup.py check
 }
 
 package() {
@@ -29,4 +30,4 @@ package() {
 	python3 setup.py install --root="$pkgdir" --optimize=1
 }
 
-sha512sums="3bc2663a010cdd299a99a61cfc4107ca4d8e87c418b0c9868a99f2fe3343c0fee386f28ba44c35ccfe11a5c73f457951251777dc8b23fe198a1b1ac60bb87c63  py3-aiohttp-2.2.3.tar.gz"
+sha512sums="b2a27357d3197a83078a21b6d566d007a48719038f38c512378620112e1980d3e595b8fc3471592589ce18b5911adc2826badd48dcc28302e1534d50961376ae  py3-aiohttp-3.1.1.tar.gz"

@@ -1,7 +1,7 @@
 # Contributor: Eivind Uggedal <eivind@uggedal.com>
 # Maintainer: Sören Tempel <soeren+alpinelinux@soeren-tempel.net>
 pkgname=mksh
-pkgver=55
+pkgver=56c
 _pkgver=R$pkgver
 pkgrel=0
 pkgdesc="MirBSD KSH Shell"
@@ -34,4 +34,4 @@ package() {
 	install -Dm644 dot.mkshrc "$pkgdir"/usr/share/doc/mksh/dot.mkshrc
 }
 
-sha512sums="8640b3a228228652d1d2725b2bc1de7915113c6eceb3fc5fde5936e5eeb8abaf9d7acebf261584220f31ebc71319d5bd8b9a08adf84c1775f3a718985bcd02d7  mksh-R55.tgz"
+sha512sums="7e4cd2d24c6bca2ebad7c6b02d158188e766bd4693d93f5bed198d69238aef078d42ce911431ad4e419e4af55083047d823bfad53973db5c6d8a685482770135  mksh-R56c.tgz"

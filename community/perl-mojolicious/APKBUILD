@@ -3,12 +3,12 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=perl-mojolicious
 _pkgreal=Mojolicious
-pkgver=7.36
+pkgver=7.72
 pkgrel=0
 pkgdesc="Real-time web framework"
 url="http://search.cpan.org/dist/Mojolicious/"
 arch="noarch"
-license="Artistic-2"
+license="Artistic-2.0"
 cpandepends=""
 cpanmakedepends="   "
 depends="$cpandepends"
@@ -42,4 +42,4 @@ package() {
 	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
 }
 
-sha512sums="62d4086b7287663810b7ec763165aeb6dbbe575712eefb403c66a0645567da0c3f4faa1ea388a5715852911fc34951e398c2ce210c487222af4f276071d296b5  Mojolicious-7.36.tar.gz"
+sha512sums="947c2925c0b00c888276172ea784168f46e8c6c89bcbcd4d6784f31dd1a73a4fbd25c5e7dd0b7f056067dbdc4247b2d00519483281b12861806e245be07777e8  Mojolicious-7.72.tar.gz"

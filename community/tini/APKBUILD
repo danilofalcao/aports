@@ -1,7 +1,6 @@
 # Maintainer: Danilo Bürger <danilo@feastr.de>
-
 pkgname=tini
-pkgver=0.15.0
+pkgver=0.17.0
 pkgrel=0
 pkgdesc="A tiny but valid init for containers"
 url="https://github.com/krallin/tini"
@@ -31,4 +30,4 @@ static() {
 	install -D -m755 tini-static "$subpkgdir"/sbin/tini-static
 }
 
-sha512sums="774addddeb2bcefd1db2e4bff7c55bba6c3f4adc41e0b2a647059eef8cc5cc9d4a47b68cb4b89aa4e9e52b85916fe2680dad2a414c82b3c276beea89e3689481  tini-0.15.0.tar.gz"
+sha512sums="4e59241bd621cd89f9c07dcd7a21754a947c87d3571b06bc5f034c0059a20cbc02d4d22fd08a79633b84fd47980dbf5240e2d2fa382aaf5c32e6003710b7691a  tini-0.17.0.tar.gz"

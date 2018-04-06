@@ -1,14 +1,13 @@
-# Contributor: Łukasz Jendrysik <scadu@yandex.com>
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=weechat
-pkgver=1.9
+pkgver=2.1
 pkgrel=0
 pkgdesc="A fast, light, extensible ncurses-based chat client"
 url="http://www.weechat.org"
 arch="all"
-license="GPL3+"
+license="GPL-3.0-or-later"
 depends_dev="cmake libintl ncurses-dev gnutls-dev libgcrypt-dev curl-dev
-	aspell-dev lua-dev perl-dev python2-dev ruby-dev"
+	aspell-dev lua-dev perl-dev python2-dev ruby-dev zlib-dev"
 makedepends="$depends_dev"
 subpackages="$pkgname-dev $pkgname-aspell:_plugin $pkgname-lua:_plugin
 	$pkgname-perl:_plugin $pkgname-python:_plugin $pkgname-ruby:_plugin"
@@ -18,6 +17,8 @@ builddir="$srcdir/$pkgname-$pkgver"
 # secfixes:
 #   1.7.1-r0:
 #   - CVE-2017-8073
+#   1.9.1-r0:
+#   - CVE-2017-14727
 
 prepare() {
 	cd "$builddir"
@@ -56,4 +57,4 @@ check() {
 	./tools/build-test.sh cmake
 }
 
-sha512sums="c032da725787d44f37ff8045b0db039a34d4761fda942530c435c6158334fb4b3e9c48db398142c21bd516a334029348df5bad717332a8cd668f88381216e616  weechat-1.9.tar.gz"
+sha512sums="36b18d194bfc1dc3a9e0c5d009d66154d222d3c357935efe98b8bb5bb9bb8aa37de426f6863eabdbf8cedbaf78af7d5d5ca4882120ed2dfbe4c60a6bf20077c2  weechat-2.1.tar.gz"

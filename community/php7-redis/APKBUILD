@@ -2,7 +2,7 @@
 # Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
 pkgname=php7-redis
 _pkgreal=redis
-pkgver=3.1.2
+pkgver=4.0.0
 pkgrel=1
 _phpver=${pkgname#php}
 _phpver=${_phpver%%-*}
@@ -13,7 +13,7 @@ license="PHP"
 depends="php$_phpver-common php$_phpver-session"
 makedepends="php$_phpver-dev autoconf"
 source="$pkgname-$pkgver.tgz::http://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
-options="!check"
+options="!check" # Need running redis server
 builddir="$srcdir/$_pkgreal-$pkgver"
 
 build() {
@@ -34,4 +34,4 @@ package() {
 	echo "extension=$_pkgreal.so" > "$confdir"/20_$_pkgreal.ini
 }
 
-sha512sums="14b6321072f8ab41b8293b40ea8e1e2bdac1bb694c4566467ea4e6ced37c8fc41bf5712bd27cebf509f25fda0492765cd2c8d2fe61395bcb0b0d9cbbceebe684  php7-redis-3.1.2.tgz"
+sha512sums="e4bf2294f696e468174c0fff9ed33831cf81c3548ce30ede01bc3c45a15cb87b9b9ea02899c451f63211be8cb37e953be138e93c16d9e0f12772b7b6d03e8dcd  php7-redis-4.0.0.tgz"

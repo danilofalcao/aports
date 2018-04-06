@@ -1,0 +1,37 @@
+# Maintainer: William Pitcock <nenolod@dereferenced.org>
+pkgname=gcompat
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="The GNU C Library compatibility layer for musl"
+url="https://code.foxkit.us/adelie/gcompat"
+arch="all !aarch64"
+license="UoI-NCSA"
+depends="libc6-compat"
+makedepends=""
+install=""
+replaces="libc6-compat"
+source="https://distfiles.adelielinux.org/source/gcompat/$pkgname-$pkgver.tar.xz"
+builddir="$srcdir/gcompat-$pkgver"
+options="!check"
+
+case "$CARCH" in
+armel) _ld="ld-linux.so.3" ;;
+armhf | armv7) _ld="ld-linux-armhf.so.3" ;;
+aarch64) _ld="ld-linux-aarch64.so.1" ;;
+x86) _ld="ld-linux.so.2" ;;
+x86_64) _ld="ld-linux-x86-64.so.2" ;;
+mips* | s390*) _ld="ld.so.1" ;;
+ppc64le) _ld="ld64.so.2" ;;
+esac
+
+build() {
+	cd "$builddir"
+	make LINKER_PATH="/lib/ld-musl-${CARCH}.so.1" LOADER_NAME="$_ld"
+}
+
+package() {
+	cd "$builddir"
+	make LINKER_PATH="/lib/ld-musl-${CARCH}.so.1" LOADER_NAME="$_ld" DESTDIR="$pkgdir" install
+}
+
+sha512sums="d4dd4d4719035c8c8effa710822da2dcaa81fe982143312c088cac8a2daf83f55838c31054d4ef9921b6b2fbda88f449aa445882119183113894952e2743c0a0  gcompat-0.2.0.tar.xz"

@@ -1,11 +1,12 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=cairo
-pkgver=1.14.8
-pkgrel=1
+pkgver=1.14.12
+pkgrel=2
 pkgdesc="A vector graphics library"
 url="http://cairographics.org/"
 arch="all"
-license="LGPL2+ MPL 1.1"
+options="!check"  # Recursive dependency on gtk+2.0 for check.
+license="LGPL-2.0-or-later MPL-1.1"
 depends=
 depends_dev="fontconfig-dev freetype-dev libxrender-dev pixman-dev
 	xcb-util-dev libxext-dev $pkgname-tools"
@@ -16,17 +17,18 @@ _ultver="2016-04-23"
 source="http://cairographics.org/releases/$pkgname-$pkgver.tar.xz
 	fontconfig-ultimate-$_ultver.tar.gz::https://github.com/bohoomil/fontconfig-ultimate/archive/$_ultver.tar.gz
 	musl-stacksize.patch
+	cairo-1.14.6-colored-emojis.patch
 	"
 builddir="$srcdir/$pkgname-$pkgver"
 
 prepare() {
 	cd "$builddir"
-	default_prepare || return 1
+	default_prepare
 
 	# infinality
 	for j in "$srcdir"/fontconfig-ultimate-$_ultver/$pkgname/*.patch; do
 		msg "Applying ${j}"
-		patch -p1 -i $j || return 1
+		patch -p1 -i $j
 	done
 }
 
@@ -44,18 +46,21 @@ build() {
 		--enable-pdf \
 		--enable-png \
 		--enable-ps \
+		--enable-svg \
 		--enable-tee \
+		--enable-x \
 		--enable-xcb \
+		--enable-xcb-shm \
+		--enable-xlib \
 		--enable-xlib-xrender \
 		--disable-xlib-xcb \
-		--disable-static \
-		|| return 1
-	make || return 1
+		--disable-static
+	make
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install || return 1
+	make DESTDIR="$pkgdir" install
 }
 
 gobject() {
@@ -67,11 +72,12 @@ gobject() {
 tools() {
 	pkgdesc="$pkgdesc (development tools)"
 	mkdir -p "$subpkgdir"/usr/lib/cairo
-	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/ || return 1
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
 	mv "$pkgdir"/usr/lib/cairo/libcairo-trace.* \
 		"$subpkgdir"/usr/lib/cairo/
 }
 
-sha512sums="dfe77a01ca72e21e11610243a5f6e92e6b0821c4ace11686fb0bac8f0bf9217a79974ff46bdf3d19fd85173f5f24f2c3f6d4e00cf729a55a6492e6798d6c4ec2  cairo-1.14.8.tar.xz
+sha512sums="ede6e75ae95605bf5c4b3859b1824cf125c4a2a35a67d38244cc70951ca44b1d4fd7cf622953d3a7cb868fb5b00856ef6d68ee615276b76eec437641290b01e1  cairo-1.14.12.tar.xz
 d8185f4ec74f44c4746acf7e79bba7ff7ffd9d35bdabeb25e10b4e12825942d910931aa857f1645e5c8185bcb40a1f1ffe1e7e647428e9ea66618b2aec52fac3  fontconfig-ultimate-2016-04-23.tar.gz
-86f26fe41deb5e14f553c999090d1ec1d92a534fa7984112c9a7f1d6c6a8f1b7bb735947e8ec3f26e817f56410efe8cc46c5e682f6a278d49b40a683513740e0  musl-stacksize.patch"
+86f26fe41deb5e14f553c999090d1ec1d92a534fa7984112c9a7f1d6c6a8f1b7bb735947e8ec3f26e817f56410efe8cc46c5e682f6a278d49b40a683513740e0  musl-stacksize.patch
+d178d413f0e258c7970340bea6e2fcaf8d9c6cfed3d831c29dcbd7b1a782e0b8c9106fca0d2d4beb6939a8993cc2554464b6fb4df888a736f8083cde226a41c6  cairo-1.14.6-colored-emojis.patch"

@@ -2,8 +2,8 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=perl-moose
 _pkgreal=Moose
-pkgver=2.2005
-pkgrel=1
+pkgver=2.2010
+pkgrel=0
 pkgdesc="A postmodern object system for Perl 5"
 url="http://search.cpan.org/dist/Moose/"
 arch="all"
@@ -44,4 +44,4 @@ package() {
 }
 
 
-sha512sums="7c6294120335343c392d04010e85a920c2a1ac0ca5531e39441d39fc38e6075a83211c12d2fbc7b7c6ed162dd6df4c974d76e7e6491b5b3527cf1a9d48a98afb  Moose-2.2005.tar.gz"
+sha512sums="1053fd0b03f5c1a68a8a320aef7fdabd350f3e3256a3108251f6358548ac1e871889c4a4b27d18ff680f555fef29b3b8aa91344e27a35dfbb48cc8f66410763b  Moose-2.2010.tar.gz"

@@ -1,35 +1,35 @@
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@alpinelinux.org>
 # Maintainer: Jakub Jirutka <jakub@jirutka.cz>
-
 pkgname=fsarchiver
-pkgver=0.8.1
+pkgver=0.8.4
 pkgrel=0
 pkgdesc="Safe and flexible file-system backup and deployment tool"
 arch="all"
 url="http://www.fsarchiver.org/"
-license="GPL2"
+license="GPL-2.0-only"
 subpackages="$pkgname-doc"
-makedepends="linux-headers attr-dev bzip2-dev e2fsprogs-dev lzo-dev xz-dev libgcrypt-dev zlib-dev"
-source="https://github.com/fdupoux/fsarchiver/releases/download/$pkgver/$pkgname-$pkgver.tar.gz"
+makedepends="linux-headers attr-dev bzip2-dev e2fsprogs-dev lz4-dev lzo-dev xz-dev libgcrypt-dev zlib-dev"
+source="https://github.com/fdupoux/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
-
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
 		--prefix=/usr \
-		|| return 1
+		--disable-zstd
 	make
+}
+
+check() {
+	cd "$builddir"
+	./src/fsarchiver --help > /dev/null
 }
 
 package() {
 	cd "$builddir"
-
 	make DESTDIR="$pkgdir" install
 }
 
-md5sums="0120521e77709749f8147e0a1e583221  fsarchiver-0.8.1.tar.gz"
-sha256sums="f21dc8f66a67e949c836f3316862db0619f14cf8971ba37342c0ae6e11e625f8  fsarchiver-0.8.1.tar.gz"
-sha512sums="17133392b0678b88552ae356bc199a8a5a8a88d3c8878b593b36acdc0f9dc3869f87475cc1a36d0df752e3bc3df8c9c0641954f675aaf60da4f1b0862dec1bc6  fsarchiver-0.8.1.tar.gz"
+sha512sums="15712e5fdb9695148e8fe42791952acf0c7d34611c3467a0cb2e2631c9c5f1c55a4e839098085e6a72c2d8988b05e6f515ef772bcc5766b57a07da65a5209efd  fsarchiver-0.8.4.tar.gz"

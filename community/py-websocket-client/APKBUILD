@@ -2,7 +2,7 @@
 # Maintainer: Francesco Colista <fcolista@alpinelinux.org>
 pkgname=py-websocket-client
 _pkgname=websocket_client
-pkgver=0.44.0
+pkgver=0.47.0
 pkgrel=0
 pkgdesc="WebSocket client library for Python"
 url="https://github.com/liris/websocket-client"
@@ -46,4 +46,4 @@ _py3() {
 	_py python3
 }
 
-sha512sums="845e29c3ee7233f77d630c21a7cd8bc0ac1f619cafbd77cf2cb493e2d6b1900611bf7e9a6b927f10685a267ca2dbe6434f8b2a1e796534649253b3f1dd446738  websocket_client-0.44.0.tar.gz"
+sha512sums="0d384e96be66877ba0c24e7194e2f3d554f818c2e2f107b054e07034fa7678946738c2b08c68cd71ebe0237fa507fade319273c492871fbd0ad7085b87cf0a54  websocket_client-0.47.0.tar.gz"

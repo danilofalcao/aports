@@ -1,15 +1,14 @@
 # Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
 pkgname=ddrescue
-pkgver=1.21
+pkgver=1.23
 pkgrel=0
 pkgdesc="Data recovery tool for block devices with errors"
-url="http://www.gnu.org/s/ddrescue/ddrescue.html"
+url="https://www.gnu.org/s/ddrescue/ddrescue.html"
 arch="all !aarch64"
-license="GPL3+"
+license="GPL-3.0-or-later"
 subpackages="$pkgname-doc"
-source="http://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.gz"
+source="http://ftp.heanet.ie/mirrors/gnu/$pkgname/$pkgname-$pkgver.tar.lz"
 builddir="$srcdir/$pkgname-$pkgver"
-
 build() {
 	cd "$builddir"
 
@@ -35,4 +34,4 @@ package() {
 	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="88d8571f4ab5e6ac7fcae5d5c77c104dab5a117596d5a2c13e0308af96811c601a429fe4ced12ba02e5a0e20bfd4aae6e3bec6fdc0860f3f80f8d89a4d85d97c  ddrescue-1.21.tar.gz"
+sha512sums="4f0b27067966b71efaae809d4f38714863cf3663f3b8c3f26055d482debb15c0fab77752411a9d242f18dbb8e4edc68494f866721dae9c95cfc5354439eaa656  ddrescue-1.23.tar.lz"

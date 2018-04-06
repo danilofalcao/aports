@@ -1,28 +1,27 @@
 # Contributor: Stuart Cardall <developer@it-offshore.co.uk>
 # Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
 pkgname=btrbk
-pkgver=0.25.0
-pkgrel=0
+pkgver=0.26.1
+pkgrel=1
 pkgdesc="Backup tool for btrfs subvolumes with atomic snapshots & incremental transfers"
-url="http://digint.ch/btrbk/"
+url="http://digint.ch/btrbk"
 arch="noarch"
-license="GPL3"
+license="GPL-3.0-or-later"
 depends="perl perl-date-calc btrfs-progs"
-makedepends=""
-options="!check"
+makedepends="asciidoc"
 subpackages="$pkgname-doc"
 source="http://digint.ch/download/$pkgname/releases/$pkgname-$pkgver.tar.xz"
 builddir="$srcdir"/$pkgname-$pkgver
 
-build() {
+check() {
 	cd "$builddir"
-	return 0
+	./btrbk -h > /dev/null
 }
 
 package() {
 	cd "$builddir"
-	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" BINDIR="/usr/bin" install
 	rm -rf "$pkgdir"/usr/lib # systemd scripts
 }
 
-sha512sums="77a10fdf070129264cc62b2ff643ea4f28c1a4ecab7c026e697ba3b0e01be35674c038762669775f13e3848031ccc6b0e2ed9baef4aedf31ab7d66fdb31c1836  btrbk-0.25.0.tar.xz"
+sha512sums="ee0043f468e11545ca28b5bd456aa9dab1b994ed6d8899ab0f53d455f78bb44f83bcf493e32fdecfec82b3029d5dabc2db72a2f32de80b709a12930df6d53b22  btrbk-0.26.1.tar.xz"

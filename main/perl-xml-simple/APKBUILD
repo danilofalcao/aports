@@ -1,28 +1,33 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=perl-xml-simple
-pkgver=2.22
+pkgver=2.25
 pkgrel=0
-pkgdesc="Simple XML parser for perl"
-url="http://search.cpan.org/dist/XML-Simple/"
+pkgdesc="Simple XML parser for Perl"
+url="http://search.cpan.org/dist/XML-Simple"
 arch="noarch"
-license="PerlArtistic"
+license="Artistic-1.0-Perl"
 subpackages="$pkgname-doc"
 depends="perl-xml-parser perl"
 makedepends="perl-dev"
 source="ftp://ftp.cpan.org/pub/CPAN/authors/id/G/GR/GRANTM/XML-Simple-$pkgver.tar.gz"
 
+builddir="$srcdir"/XML-Simple-$pkgver
+
 build() {
-	cd "$srcdir"/XML-Simple-$pkgver
-	perl Makefile.PL INSTALLDIRS=vendor || return 1
-	make || return 1
+	cd "$builddir"
+	perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
 }
 
 package() {
-	cd "$srcdir"/XML-Simple-$pkgver
-	make DESTDIR="$pkgdir" install || return 1
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
 	find "$pkgdir" -name '.packlist' -delete
 	find "$pkgdir" -name 'perllocal.pod' -delete
 }
-md5sums="0914abddfce749453ed89b54029f2643  XML-Simple-2.22.tar.gz"
-sha256sums="b9450ef22ea9644ae5d6ada086dc4300fa105be050a2030ebd4efd28c198eb49  XML-Simple-2.22.tar.gz"
-sha512sums="b5e5d36726b8a0efcf7200522d802a7f733c883526db2dba64ce23bf7e044d20d9186fac3bb2f2940807a30f746301f690129c4c542341c8a57a735471b5f4d7  XML-Simple-2.22.tar.gz"
+sha512sums="0f1a6a1bdb8f6ac6fa4deef33d09930eb4758b4a3ed4431624004ffa2b1eb02f0d6ce14cb4942162cb76f7aa39fea4ec6a71e1eb9ebd464b710db7024bdd990c  XML-Simple-2.25.tar.gz"

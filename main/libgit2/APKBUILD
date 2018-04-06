@@ -3,23 +3,22 @@
 # Contributor: Pierre-Gilas MILLON <pgmillon@gmail.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=libgit2
-pkgver=0.25.1
-pkgrel=2
+pkgver=0.26.3
+pkgrel=1
 pkgdesc="A linkable library for Git"
 url="https://libgit2.github.com/"
 arch="all"
-license="GPLv2"
-depends=""
+license="GPL-2.0-only-WITH-GCC-exception-2.0"
 depends_dev="curl-dev libssh2-dev"
 makedepends="$depends_dev python2 cmake zlib-dev libressl-dev"
-subpackages="$pkgname-dev"
+subpackages="$pkgname-dev $pkgname-tests::noarch"
 provides="$pkgname-libs"  # for backward compatibility with v3.4
 replaces="$pkgname-libs"  # for backward compatibility with v3.4
 source="$pkgname-$pkgver.tar.gz::https://github.com/$pkgname/$pkgname/archive/v$pkgver.tar.gz
-	libressl.patch
-	pkgconfig-do-not-quote-Libs.patch
 	build-both-static-dynamic.patch
+	libressl-2.7.patch
 	"
+options="!check" # FIXME some tests fails
 builddir="$srcdir/$pkgname-$pkgver"
 
 # secfixes:
@@ -32,23 +31,33 @@ builddir="$srcdir/$pkgname-$pkgver"
 #   - CVE-2016-8569
 
 build() {
-	cd "$builddir"
-	cmake \
+	mkdir -p "$builddir"/build
+	cd "$builddir"/build
+
+	cmake .. \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr \
-		-DCMAKE_INSTALL_LIBDIR=lib \
-		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
-		-DCMAKE_C_FLAGS="$CFLAGS" \
-		|| return 1
-	make || return 1
+		-DCMAKE_C_FLAGS="$CFLAGS"
+	make
+}
+
+check() {
+	cd "$builddir"/build
+	make test
 }
 
 package() {
-	make DESTDIR="$pkgdir" \
-		-C "$builddir" install || return 1
+	cd "$builddir"/build
+	make DESTDIR="$pkgdir" install
 }
 
-sha512sums="bbd0d27c95406b548185ce02e2a9288a9dcb8c3b28476ba20f4f4917f6bd67f1ddee80de3054d30b79cdb9d973c3061a15ea7847c79bfa4e0c62e41d5195cb99  libgit2-0.25.1.tar.gz
-3674957d09207b11d268ba9fcb442a081b8efe318d0e8501b7afa0ae2397efc9aff8572b1ffd9f2286c46a06a647fbe943c2cc7e8f97d1a0288e74010846d439  libressl.patch
-635fb1f64c4b676044e7800cc8796646f90d7e6447ab77f97b3491f746351e826ffa9c03b6bef7ffabad9c50a5c5e983ea9e53b4972211813f54d81b703b4aed  pkgconfig-do-not-quote-Libs.patch
-39534d10f38f394446f93df810233464807fca3b0e903ee40067971ecbe1d78102bbe04283435032f757f970e6846ecf279eb727ab137c01e84427bd16913ee6  build-both-static-dynamic.patch"
+tests() {
+	pkgdesc="$pkgdesc (tests)"
+
+	mkdir -p "$subpkgdir"/usr/src/$pkgname/
+	cp -a "$builddir"/tests "$subpkgdir"/usr/src/$pkgname/
+}
+
+sha512sums="abcd3a904bed05c1f200be2ffbc2c44cebd1b548459ee834d5635c5eaf7bcd551a4993bcc1cb9fbeae9ea990c5ebc07655007ff4e623fa7c697f326c0ce12c3e  libgit2-0.26.3.tar.gz
+6817cae286f663c6ceb890576c491d89ffe0cf57b96a7340b8b4ef2c021a35d7672ce76b6e875ed72155e960455d29973329782850bd9cca543c6f74a9a6f93f  build-both-static-dynamic.patch
+02c167b55daa5045486662f628c53e5affd636043f95551b1349de8c2e643c98432c8b7bb73e8301c1f1c51248a7bf16e920ed759a349c0701e6f185f763078e  libressl-2.7.patch"

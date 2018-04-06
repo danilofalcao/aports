@@ -2,36 +2,32 @@
 # Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
 pkgname=php7-mongodb
 _pkgreal=mongodb
-pkgver=1.2.8
+pkgver=1.4.2
 _pkgver=${pkgver/_rc/RC}
-pkgrel=1
+pkgrel=2
 pkgdesc="PHP7 MongoDB driver"
 url="http://pecl.php.net/package/mongodb"
 arch="x86_64 armhf"
 license="PHP"
 depends="php7-json"
-makedepends="openssl-dev pcre-dev php7-dev autoconf"
-install=""
-subpackages=""
+makedepends="libressl-dev pcre-dev php7-dev autoconf"
 source="http://pecl.php.net/get/$_pkgreal-$_pkgver.tgz"
+options="!check"  # tests requires additional dependencies (vagrant)
+builddir="$srcdir"/$_pkgreal-$_pkgver
 
-_builddir="$srcdir"/$_pkgreal-$_pkgver
 build() {
-	cd "$_builddir"
-	phpize7 || return 1
+	cd "$builddir"
+	phpize7
 	./configure --prefix=/usr \
-		--with-php-config=/usr/bin/php-config7 \
-	|| return 1
-	make || return 1
+		--with-php-config=/usr/bin/php-config7
+	make
 }
 
 package() {
-	cd "$_builddir"
-	make INSTALL_ROOT="$pkgdir/" install || return 1
-	install -d "$pkgdir"/etc/php7/conf.d || return 1
+	cd "$builddir"
+	make INSTALL_ROOT="$pkgdir/" install
+	install -d "$pkgdir"/etc/php7/conf.d
 	echo "extension=$_pkgreal.so" > "$pkgdir"/etc/php7/conf.d/$_pkgreal.ini
 }
 
-md5sums="7c871c22fe7c8afdbe055e24075e95cf  mongodb-1.2.8.tgz"
-sha256sums="38090c38f0d52dd0a4c41c4f7f7e4e4a86a6375b6c5009e754b19451212d0bdd  mongodb-1.2.8.tgz"
-sha512sums="ef174fad777a139bd0a4b0b53ba30ea1614e5ebb72ef4dc3c2f1a99f3c17caa237563d9e93906f0516dabfb81c738a0ea6e02421e9605908613925839c5cb7ff  mongodb-1.2.8.tgz"
+sha512sums="ee40c76194ff47407eb14aa7677fe090fe71fed953afd36b68661f7ab67315cb105b485a49f6b1d00a97c1829afb9a4f605463d8d310f7f9263bf90f4bba1bb6  mongodb-1.4.2.tgz"

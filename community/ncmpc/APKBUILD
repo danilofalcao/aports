@@ -1,0 +1,45 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Peter Bui <pnutzh4x0r@gmail.com>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=ncmpc
+pkgver=0.30
+pkgrel=0
+pkgdesc="Ncurses client for the Music Player Daemon (MPD)"
+url="https://www.musicpd.org/clients/ncmpc"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="glib-dev libmpdclient-dev meson ncurses-dev"
+subpackages="$pkgname-doc $pkgname-lang $pkgname-dbg"
+source="http://www.musicpd.org/download/$pkgname/0/$pkgname-$pkgver.tar.xz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=release \
+		-Dcurses=ncurses \
+		-Dlyrics_screen=true \
+		-Dlyrics_plugin_dir=share/$pkgname/lyrics \
+		. output
+	ninja -C output
+}
+
+check() {
+	cd "$builddir"
+	./output/ncmpc --help > /dev/null
+}
+
+package() {
+	cd "$builddir"
+	DESTDIR="$pkgdir" ninja -C output install
+
+	mkdir -p "$pkgdir"/usr/share/$pkgname/lyrics
+	install -m755 lyrics/* \
+		"$pkgdir"/usr/share/$pkgname/lyrics
+}
+
+sha512sums="bc92c51c78f7919eb6b5cebaac8bda1231701fd9011fcadd6da8bbc5cc16e5dbe30d33d6e2f7d4cc07399299bcd3de572c9516f90d0376212771fd2c3af8afc7  ncmpc-0.30.tar.xz"

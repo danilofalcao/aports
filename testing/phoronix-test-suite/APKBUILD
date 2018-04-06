@@ -1,0 +1,20 @@
+# Contributor: Lucas Ramage <ramage.lucas@openmailbox.org>
+# Maintainer: Lucas Ramage <ramage.lucas@openmailbox.org>
+pkgname=phoronix-test-suite
+pkgver=7.8.0
+pkgrel=0
+pkgdesc="The most comprehensive testing and benchmarking platform available for Linux"
+url="https://www.phoronix-test-suite.com"
+arch="noarch"
+license="GPL-3.0"
+depends="php5 php5-dom php5-zip php5-json"
+subpackages="pkgname-doc"
+provides="phoromatic-server phoromatic-client"
+source="${pkgname}-${pkgver}.tar.gz::https://github.com/$pkgname/$pkgname/archive/v$pkgver.tar.gz"
+options="!check"
+
+package() {
+	cd $builddir
+	DESTDIR="${pkgdir}" ./install-sh
+}
+sha512sums="ebcfac4e6b79b3efb1122952c67ac23d6de87786515ffd0ee70e1f253bedc6045bd5a798510bcd6a0c8b7eccd950805778b522742953e2e699164e65f2a8a985  phoronix-test-suite-7.8.0.tar.gz"

@@ -2,20 +2,27 @@
 # Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
 pkgname=py3-aiohttp-session
 _pkgname=aiohttp_session
-pkgver=0.7.1
+pkgver=2.2.0
 pkgrel=0
 pkgdesc="Sessions support for aiohttp"
 url="http://aiohttp-session.readthedocs.io/"
 arch="noarch"
-license="ASL 2.0"
+license="Apache-2.0"
+# Requires packages for tests which are not available
+options="!check"
 depends="py3-aiohttp"
-makedepends="python3-dev"
-source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/aiohttp-session/aiohttp-session-$pkgver.tar.gz"
+makedepends="python3-dev py3-setuptools"
+source="aiohttp-session-${pkgver}.tar.gz::https://github.com/aio-libs/aiohttp-session/archive/v$pkgver.tar.gz"
 builddir="$srcdir"/aiohttp-session-$pkgver
 
 build() {
 	cd "$builddir"
-	python3 setup.py build || return 1
+	python3 setup.py build
+}
+
+check() {
+	cd "$builddir"
+	python3 setup.py test
 }
 
 package() {
@@ -23,6 +30,4 @@ package() {
 	python3 setup.py install --prefix=/usr --root="$pkgdir"
 }
 
-md5sums="815ae4d64819b6a45879c4626c5db792  aiohttp-session-0.7.1.tar.gz"
-sha256sums="7b4c3a54644fbd3c5ad4402872f8ba3fe6b0f70cfd896df4a4013a84dc2a511b  aiohttp-session-0.7.1.tar.gz"
-sha512sums="743a02f0aa1a2b022de743f963aab95c9042faa8ec85bd6b643aaa61e6cddb81841eab0d1b5b6797e6a0b072ddd6c66957b7f0cb11e1a05bd483a89d6196db4e  aiohttp-session-0.7.1.tar.gz"
+sha512sums="6215276cb1df0d8db7845ad016895a330835e97f1e6bf58700e090f8b6856dc919743b903ae23cdb091cf280df60954cf4c09ade00ee1471ff4d8901718a8d71  aiohttp-session-2.2.0.tar.gz"

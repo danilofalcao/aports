@@ -2,14 +2,14 @@
 # Maintainer: Nathan Johnson <nathan@nathanjohnson.info>
 pkgname=php7-couchbase
 _pkgreal=couchbase
-pkgver=2.3.1
-pkgrel=0
+pkgver=2.4.5
+pkgrel=1
 _phpver=${pkgname#php}
 _phpver=${_phpver%%-*}
 pkgdesc="PHP$_phpver extension for Couchbase"
 url="http://pecl.php.net/package/couchbase"
 arch="all"
-license="ASL-2.0"
+license="Apache-2.0"
 depends="php$_phpver-common php$_phpver-json"
 makedepends="php$_phpver-dev autoconf libcouchbase-dev zlib-dev"
 source="$pkgname-$pkgver.tgz::http://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
@@ -24,6 +24,11 @@ build() {
 	make
 }
 
+check() {
+	cd "$builddir"
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
 package() {
 	local confdir="$pkgdir/etc/php$_phpver/conf.d"
 	cd "$builddir"
@@ -34,4 +39,4 @@ package() {
 	echo "extension=$_pkgreal.so" > "$confdir"/$_pkgreal.ini
 }
 
-sha512sums="8a0003968d6ec7fec2961ea24c0677962c165cd0db4ebbcd3ec0d7ef50bd5e9788a4725ae4c18c5a558b30de44392c176d93d23980d489fd255546393a7a77f5  php7-couchbase-2.3.1.tgz"
+sha512sums="c1ee8f8dc58c1b79f8c3dd3ebb27be8436b76debde9c965758b5b8e5918b92f66a8f1afbf943f1f81ba8110e4a4bde089a4fc930a7d9240414102be9221471df  php7-couchbase-2.4.5.tgz"

@@ -1,22 +1,21 @@
 # Contributor: stef <l0ls0fo2i@ctrlc.hu>
 # Maintainer: André Klitzing <aklitzing@gmail.com>
 pkgname=zstd
-pkgver=1.3.0
+pkgver=1.3.4
 pkgrel=0
 pkgdesc="Zstandard - Fast real-time compression algorithm"
 url="http://www.zstd.net"
 arch="all !armhf"
-license="BSD"
+license="BSD-3-Clause GPL-2.0-or-later"
 checkdepends="file"
-subpackages="$pkgname-dev $pkgname-doc"
-source="$pkgname-$pkgver.tar.gz::https://github.com/facebook/$pkgname/archive/v$pkgver.tar.gz
-	increase-max-number-cores-supported.patch"
-
+subpackages="$pkgname-static $pkgname-libs $pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/facebook/$pkgname/archive/v$pkgver.tar.gz"
 builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
-	make -j1
+	unset CPPFLAGS
+	make MOREFLAGS="-O2"
 }
 
 check() {
@@ -29,5 +28,10 @@ package() {
 	make PREFIX="/usr" DESTDIR="$pkgdir" install
 }
 
-sha512sums="5eb9e001e14d3342e76eb57b672c636fd56839ba8fc0ba9a751484ea93389c72c494ad2125dc2f9be1f72481f3af34568477123f7e9d3c7504e061e4c083cb30  zstd-1.3.0.tar.gz
-b764be95a7b3876b62215ff4feb8c464e9cbf467e410de4e7026e8d10f6287193d16ae76d516f3a2eaa7c526d3a73df1437041930896dd8a29dc91b988d10fcb  increase-max-number-cores-supported.patch"
+static() {
+	pkgdesc="zstd static library"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib/
+}
+
+sha512sums="d3c8c1dfabd251b03205b64eff97898c1e2ca457191b1f6257450e6d2675451a68aa0bc2220b2c65baa69a6997d98490612779d95b3325320c0a3202810ae554  zstd-1.3.4.tar.gz"
